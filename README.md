@@ -4,15 +4,13 @@ This is an attempt at implementing replay takeover for Melty Blood Actress Again
 
 The code is based on my [partial rewrite of kosunan's training tool](https://github.com/wehrliaa/mbaacc-training-linux).
 
-Huge thanks to @Meepster99 for helping me with this.
+Huge thanks to @Meepster99 for helping me with this!
 
 ## Note for Linux users!!!!
 
 **Due to a limitation in (or feature of) Wine, this tool and the game need to be run on the same Wine prefix**, otherwise it won't detect the game at all. So if you're running the game through Lutris, Proton, Steam, etc, you might run into issues.
 
 ## Goals
-
-Tool will be officially done when all goals are met. Otherwise, it's a WIP.
 
 - [X] Pause the game indefinitely (gotta use the super flash freeze tech)
 - [ ] Prevent the replay from desyncing while paused
@@ -34,4 +32,4 @@ You should get an executable called `takeover.exe`. Run it from your terminal al
 
 ## License
 
-Public domain, no warranty, no guarantee, no nothing. Do whatever you want with it.
+This is public domain software.
