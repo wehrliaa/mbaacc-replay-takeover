@@ -1,10 +1,91 @@
+crossed-out text ~~like this~~ are to be ignored. they are old ideas that turned out to not be 100% correct.
+
 # general idea
 
-basically while i was thinking about how i would implement this, i thought that maybe there would some kind of iterator thing that keeps track of which part of the replay file is being read at the moment. turns out that might actually be true, but getting a hold of that value will probably be quite an involved process. i need that value so i can load states without desync the replay: i would load each character's positions, actions, health values, meter, etc, *and* where in the replay that moment happened.
+basically while i was thinking about how i would implement this, i thought that maybe there would some kind of iterator thing that keeps track of which part of the replay file is being read at the moment. turns out that might actually be true, but getting a hold of that value will probably be quite an involved process. i need that value so i can load states without desyncing the replay: i would load each character's positions, actions, health values, meter, etc, *and* where in the replay that moment happened.
 
 when i say "replay iterator", i'm referring to that number.
 
-# numbers in MBAA.CT
+actually... scratch that, the "replay iterator" might be more than a single number. see below.
+
+# memory addresses and offsets et cetera
+
+seems like the game uses a different ~~address~~ ~~variable~~ address to store the replay iterator for each round.
+
+~~there's always going to be more than 1 address for this. one stops getting incremented after the winning character begins its win pose animation (presumably the end of that section/round in the replay file) (wp), the other one stops after the screen transition animation starts (st).~~ this is actually all... not really "wrong", but it doesn't show the whole picture. just read the diagram below.
+
+- "round N wp" values seem to be just general frame counters. they are incremented every frame, and stop being incremented at the start of the winning character's Win Pose animation (hence "wp").
+- "round N st" values also seem to be general frame counters. they are incremented every frame, but stop being incremented at the start of the Screen Transition animation (hence "st"), and thus end at a higher value than round N wp, when the next round starts.
+
+"round N wp" and "round N st" can have the same value at the start of the next round if you mash to skip the win pose animation.
+
+```
+(p1 is player 1, p2 is player 2)
+
+x                             = some kind of base address, idk        (? bytes) (ex: 0x29C1F90)
+y                             = some other kind of base address, idk  (? bytes) (ex: 0x2A88258)
+
+Round 1:
+
+x + 0x10                      = round 1 wp                            (4 bytes) (ex: 0x29C1FA0)
+x + 0x18                      = player 1's Nth input in the replay    (4 bytes) (ex: 0x29C1FA8)
+x + 0x1C                      = frames since player 1's last input    (4 bytes) (ex: 0x29C1FAC)
+
+x + 0x20 + 0x10               = r1 wp but for p2? same value as r1 wp (4 bytes) (ex: 0x29C1FC0)
+x + 0x20 + 0x18               = player 2's Nth input in the replay    (4 bytes) (ex: 0x29C1FC8)
+x + 0x20 + 0x1C               = frames since player 2's last input    (4 bytes) (ex: 0x29C1FCC)
+
+y + 0x12C                     = round 1 st                            (4 bytes) (ex: 0x2A88384)
+
+Round 2:
+
+x + 0x90 + 0x10               = round 2 wp                            (4 bytes) (ex: 0x29C2030)
+x + 0x90 + 0x18               = player 1's Nth input in the replay    (4 bytes) (ex: 0x29C2038)
+x + 0x90 + 0x1C               = frames since player 1's last input    (4 bytes) (ex: 0x29C203C)
+
+x + 0x90 + 0x20 + 0x10        = r2 wp but for p2? same value as r2 wp (4 bytes) (ex: 0x29C2050)
+x + 0x90 + 0x20 + 0x18        = player 2's Nth input in the replay    (4 bytes) (ex: 0x29C2058)
+x + 0x90 + 0x20 + 0x1C        = frames since player 2's last input    (4 bytes) (ex: 0x29C205C)
+
+y + 0x140 + 0x12C             = round 2 st                            (4 bytes) (ex: 0x2A884C4)
+
+Round 3:
+
+x + 0x90 + 0x90 + 0x10        = round 3 wp                            (4 bytes) (ex: 0x29C20C0)
+x + 0x90 + 0x90 + 0x18        = player 1's Nth input in the replay    (4 bytes) (ex: 0x29C20C8)
+x + 0x90 + 0x90 + 0x1C        = frames since player 1's last input    (4 bytes) (ex: 0x29C20CC)
+
+x + 0x90 + 0x90 + 0x20 + 0x10 = r3 wp but for p2? same value as r3 wp (4 bytes) (ex: 0x29C20E0)
+x + 0x90 + 0x90 + 0x20 + 0x18 = player 2's Nth input in the replay    (4 bytes) (ex: 0x29C20E8)
+x + 0x90 + 0x90 + 0x20 + 0x1C = frames since player 2's last input    (4 bytes) (ex: 0x29C20EC)
+
+y + 0x140 + 0x140 + 0x12C     = round 3 st                            (4 bytes) (ex: 0x2A88604)
+
+```
+
+i'm sure it goes on and on like this for later rounds, but i can't prove that at the moment.
+
+i can confirm that changing these the "Nth input" and "frames since last input" with Cheat Engine desyncs the replay. it also seems that the game keeps track of how long each Nth input lasts.
+
+let's say player 1's 28th input lasts for exactly 16 frames. if you pause the game in the middle of it, reset the "frames since last input" counter, and unpause, player 1 will still hold that input until that counter reaches 15 (16 - 1. or maybe it's just 16. idk). if you do this forever, player 1 will keep holding that input forever. after it reaches its target value (15 or 16 in this case), it will proceed as normal, but now it is heavily desynced.
+
+anyway, this whole thing is extremely important, and will prevent desyncs when loading states.
+
+## relevant functions found with ghidra
+
+Assuming the game is in replay mode (actually watching a replay, not the replay menu)...
+
+- `40e390` is "the main,, 'function' that is called once a frame".
+- `432c50` "updates the game (i think)(".
+- `444b10` reads the value of "frames since player N's last input". doesn't look like it does much else.
+- `444d00` is "called at roundstarts and replay read". among other things, it resets round N wp and everything related to it to 0
+- `444d60` mainly updates the values of everything in the diagram above. very important function to look at.
+- - `4463a0` calls `444d60`.
+- `44c3f0` is called when the game is paused (press Start). sets `g_ISPAUSED` to 1.
+- `44c8f0` is called when the game is unpaused (exit pause menu). sets `g_ISPAUSED` to 0.
+- `48e0a0` "handles inputs (i believe, im not sure)".
+
+# numbers in MBAA.CT (Cheat Engine)
 
 game mode:
 - 1 game
@@ -18,82 +99,10 @@ intro state:
 - 1 pre-round start (characters can move but not attack)
 - 0 round start (can attack now)
 
-replay iterator is 225 + game timer (past intro state 0)
+~~replay iterator~~ round N wp value is 225 + game timer (past intro state 0)
 
-# asm stuff
+# diary thing
 
-for some reason the game uses a different ~~address~~ ~~variable~~ address to store the replay iterator for each round, but there are a few consistencies.
+maybe it would be a better idea to call `444d00`, since that seems to be the only function capable of affecting the replay iterator. but let me try out something first.
 
-there's always going to be more than 1 address for this. one stops getting incremented after the winning character begins its win pose animation (presumably the end of that section/round in the replay file) (wp), the other one stops after the screen transition animation starts (st).
-
-it is almost always of the form:
-
-```
-x                             = ???        (ex: 029CAD20) (4 bytes)
-x + 0x10                      = round 1 wp (ex: 029CAD30) (4 bytes)
-x + 0x10 + 0x20               = round 1 wp (ex: 029CAD50) (4 bytes)
-x + 0x10 + 0x70               = round 2 wp (ex: 029CADC0) (4 bytes)
-x + 0x10 + 0x70 + 0x20        = round 2 wp (ex: 029CADE0) (4 bytes)
-x + 0x10 + 0x70 + 0x70        = round 3 wp (ex: 029CAE50) (4 bytes)
-x + 0x10 + 0x70 + 0x70 + 0x20 = round 3 wp (ex: 029CAE70) (4 bytes)
-
-y                         = ???        (ex: 02A87B88) (4 bytes)
-y + 0x12C                 = round 1 st (ex: 02A87CB4) (4 bytes)
-y + 0x12C + 0x140         = round 2 st (ex: 02A87DF4) (4 bytes)
-y + 0x12C + 0x140 + 0x140 = round 3 st (ex: 02A87F34) (4 bytes)
-```
-
-my impression is that `round N wp` more closely resembles a replay iterator than `round N st`, which seems to be a general round timer.
-
-`round N wp` is incremented by `444d60`, and reset to 0 by `444d00`.
-
-## functions in ghidra
-
-Assuming the game is in replay mode (actually watching a replay, not the replay menu)...
-
-- `40e390` is "the main,, 'function' that is called once a frame".
-- `432c50` "updates the game (i think)(".
-- `444d00` is "called at roundstarts and replay read". among other things, it resets something that looks like a replay iterator to 0.
-- `444d60` is ??? but contains 444e06 which every frame past intro state 1 adds 1 to something that looks like a replay iterator.
-- - `4463a0` calls `444d60`.
-- `44c3f0` is called when the game is paused (press Start). sets `g_ISPAUSED` to 1.
-- `44c8f0` is called when the game is unpaused (exit pause menu). sets `g_ISPAUSED` to 0.
-- `48e0a0` "handles inputs (i believe, im not sure)".
-
-At `444d00`:  
-```
-for (i = 0;
-	(iVar1 = *(int *)(unaff_ESI + 0x120), iVar1 != 0 && (i < (uint)(*(int *)(unaff_ESI + 0x124) - iVar1 >> 5)));
-	i = i + 1)
-{
-	if ((iVar1 == 0) || ((uint)(*(int *)(unaff_ESI + 0x124) - iVar1 >> 5) <= i)) {
-		UnrecoveredJumptable___invalid_parameter_noinfo_IDA?();
-	}
-...
-```
-
-At `444d60`:  
-```
-for (i = 0;
-	(iVar1 = *(int *)(unaff_EBX + 0x120), iVar1 != 0 && (i < (uint)(*(int *)(unaff_EBX + 0x124) - iVar1 >> 5)));
-	i = i + 1)
-{
-	if ((iVar1 == 0) || ((uint)n2 <= i)) {
-		UnrecoveredJumptable___invalid_parameter_noinfo_IDA?();
-	}
-```
-
-Only difference is `unaff_ESI` and `unaff_EBX`, but outside of that it's the exact same chunk of code.
-
-Simplified:
-
-```
-for (i = 0;
-	(iVar1 = n1, iVar1 != 0 && (i < ((uint)n2 - iVar1 >> 5)));
-	i = i + 1)
-{
-	if ((iVar1 == 0) || ((uint)(n2 - iVar1 >> 5) <= i)) {
-		UnrecoveredJumptable___invalid_parameter_noinfo_IDA?();
-	}
-...
-```
+i forgot what i wanted to "try out" here but oh well.
