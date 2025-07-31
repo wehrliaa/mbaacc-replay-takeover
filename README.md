@@ -4,7 +4,7 @@ This is an attempt at implementing replay takeover for Melty Blood Actress Again
 
 The code is based on my [partial rewrite of kosunan's training tool](https://github.com/wehrliaa/mbaacc-training-linux).
 
-Huge thanks to @Meepster99 for helping me with this!
+Huge thanks to [Meepster99](https://github.com/Meepster99/) for helping me with this!
 
 ## Note for Linux users!!!!
 
