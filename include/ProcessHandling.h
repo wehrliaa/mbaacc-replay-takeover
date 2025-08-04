@@ -1,4 +1,4 @@
-// process_handling.h: Process handling stuff
+// ProcessHandling.h: Process handling stuff
 #pragma once
 
 #include <windows.h>

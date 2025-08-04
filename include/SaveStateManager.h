@@ -1,4 +1,4 @@
-// savestatemanager.h: Savestate-related code
+// SaveStateManager.h: Savestate-related code
 
 class Save_State_Manager {
 	// キャラクター構造体のサイズを定義
@@ -53,4 +53,5 @@ public:
 		for (MemoryBlock i : this->mem_pairs_list)
 			i.write_memory(NULL, 0, false);
 	}
+
 };

@@ -17,9 +17,10 @@
 #include <thread>
 #include <vector>
 
-#include "process_handling.h"
-#include "memory_block.h"
+#include "ProcessHandling.h"
+#include "MemoryBlock.h"
 #include "cli.h"
-#include "savestatemanager.h"
-#include "gamestatemanager.h"
-#include "actionhandler.h"
+#include "SaveStateManager.h"
+#include "GameStateManager.h"
+#include "PlayerReplayData.h"
+//#include "actionhandler.h"

@@ -4,6 +4,10 @@ class Action_Handler {
 public:
 	Game_State_Manager& game_state_obj;
 	Save_State_Manager& save_state_obj;
+
+	// 6 rounds max, 2 players
+	//PlayerReplayData[6][2] PlayerData;
+
 	bool f1_pressed_last_frame;
 	bool f2_pressed_last_frame;
 	bool is_pressed_key;
@@ -39,11 +43,11 @@ public:
 		// be bothered
 		//if ((fn2_button >= 1) && ((dmy_st == 5) || (dmy_st == -1))) {
 			//printf("passed\n");
-		if (fn2_button >= 1) {
-			if (this->is_save_flag == true)
-				//this->game_state_obj.game_reset();
-			this->is_pressed_key = true;
-		}
+		//if (fn2_button >= 1) {
+		//	if (this->is_save_flag == true)
+		//		//this->game_state_obj.game_reset();
+		//	this->is_pressed_key = true;
+		//}
 
 		if (is_f1_pressed) {
 			this->fn1_frames += 1;
@@ -53,11 +57,7 @@ public:
 				if (this->is_paused == false)
 					this->game_state_obj.play();
 
-				//action_f1();
 				this->is_pressed_key = true;
-			} else { // Being held
-				//if (this->fn1_frames >= 60)
-				//	this->is_save_flag = false;
 			}
 		} else
 			this->fn1_frames = 0;
@@ -78,6 +78,10 @@ public:
 
 		if (this->is_paused) {
 			this->game_state_obj.pause();
+			//if (!this->is_replay_index_saved) {
+			//	// save replay index shit
+			//	this->is_replay_index_saved = true;
+			//}
 		}
 		
 		if (this->is_save_flag == true) {

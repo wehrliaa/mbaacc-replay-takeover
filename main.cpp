@@ -2,7 +2,7 @@
 
 #include "main.h"
 
-// This was declared in process_handling.h first.
+// This was declared in ProcessHandling.h first.
 struct Process gProc;
 
 void
@@ -29,37 +29,69 @@ main() {
 	SetConsoleCursorInfo(han, &cursorInfo);
 
 	system("cls");
-
  	gProc = wait_process("MBAA.exe");
 
-	//printf("base address is %lu\n", gProc.baddr);
-	//return 0;
+	// Input-related variables
+	int FN1Button;
+	int FN1Frames;
 
-	int prev_frame_count = 0;
-	int global_frame_count = 0;
-
+	// Game state-related variables
 	Save_State_Manager save_state;
 	Game_State_Manager game_state;
-	Action_Handler action_handler = Action_Handler(game_state, save_state);
+	bool isPaused = false;
+	bool isReplayDataSaved = false;
+	int global_frame_count = 0;
+	int prev_frame_count = 0;
+
+	// Maximum of 6 rounds, 2 players
+	struct PlayerReplayData prdArray[6][2];
 
 	while (1) {
 		game_state.fetch_game_data();
 
-		//if (game_state.aGameMode.int_data == 20) {
-		//	action_handler.is_save_flag = false;
-		//	printf("\rIn character select...            ");
-		//}
-
 		// Everything below this chunk of code is synced with the game's
 		// framerate.
-		// TODO: Change this to replay timer, so you can pause while in intro state 1
+		// TODO: Change this to replay timer, so you can pause and take over
+		// while in intro state 1
 		global_frame_count = game_state.timer_check();
 		if (global_frame_count == prev_frame_count)
 			continue;
-
 		prev_frame_count = global_frame_count;
 
-		action_handler.action_handle();
+		// Handle inputs FIRST //
+
+		FN1Button = game_state.aFN1Key.int_data;
+		if (FN1Button >= 1) {
+			FN1Frames += 1;
+			if (FN1Frames == 1) { // Not being held
+				isPaused = !isPaused;
+			}
+		} else FN1Frames = 0;
+
+		// Handle state SECOND //
+		// srry im dumb i need to remind myself of this //
+
+		// Reset stuff at the start of each round
+		if (global_frame_count == 0) {
+			isPaused = false;
+			isReplayDataSaved = false;
+		}
+
+		if (isPaused) {
+			// save shit and pause... or maybe just pause
+			game_state.pause();
+			if (!isReplayDataSaved) {
+				isReplayDataSaved = true;
+				saveReplayData(&game_state, prdArray);
+			}
+		} else {
+			// load shit and play
+			if (FN1Frames == 1) {
+				game_state.play();
+				loadReplayData(&game_state, prdArray);
+				isReplayDataSaved = false;
+			}
+		}
 	}
 
 	return 0;

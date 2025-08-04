@@ -63,13 +63,50 @@ y + 0x140 + 0x140 + 0x12C     = round 3 st                            (4 bytes) 
 
 ```
 
-i'm sure it goes on and on like this for later rounds, but i can't prove that at the moment.
+it goes on and on like this for later rounds, for a total of 6 times (maximum of 5 rounds in 3 win battle + final round)
 
 i can confirm that changing these the "Nth input" and "frames since last input" with Cheat Engine desyncs the replay. it also seems that the game keeps track of how long each Nth input lasts.
 
 let's say player 1's 28th input lasts for exactly 16 frames. if you pause the game in the middle of it, reset the "frames since last input" counter, and unpause, player 1 will still hold that input until that counter reaches 15 (16 - 1. or maybe it's just 16. idk). if you do this forever, player 1 will keep holding that input forever. after it reaches its target value (15 or 16 in this case), it will proceed as normal, but now it is heavily desynced.
 
 anyway, this whole thing is extremely important, and will prevent desyncs when loading states.
+
+...
+
+actually it's like this
+
+```c
+// the address leading to here is stored at [0x77bf98]+0x120
+struct PlayerReplayData {      // 32 (0x20) bytes long
+
+	// offset 0x00 is unknown or undefined. looking at it with cheat engine
+	// doesn't tell me anything.
+
+	int hugenumber1;           // 4 bytes long, offset 0x04
+	int hugenumber2;           // 4 bytes long, offset 0x08
+
+	// (hugenumber2 - hugenumber1) >> 3 = number of total inputs
+
+	// offset 0x0C is unknown or undefined
+
+	int roundN_wp;             // 4 bytes long, offset 0x10
+
+	// offset 0x14 is unknown or undefined
+
+	uint NthInput;             // 4 bytes long, offset 0x18
+	uint framesSinceLastInput; // 4 bytes long, offset 0x1C
+}
+```
+
+1. there's a maximum of 6 rounds
+2. each round's data struct or array (don't know which one it is yet) is 144 (0x90) bytes long
+3. 64 (0x40) bytes of that is each player's data (32 bytes each). idk what the remaining 80 (0x50) bytes are.
+4. 144 * 6 = 864 (0x360)
+5. the entire array of rounds could be at least 864 (0x360) bytes long
+
+`77bf34+64` holds the address to something
+`77bf34+70` is the current round number (zero-indexed)
+`[77bf34+64]+120` holds the address leading to the start of PlayerReplayData stuff
 
 ## relevant functions found with ghidra
 
@@ -80,7 +117,8 @@ Assuming the game is in replay mode (actually watching a replay, not the replay 
 - `444b10` reads the value of "frames since player N's last input". doesn't look like it does much else.
 - `444d00` is "called at roundstarts and replay read". among other things, it resets round N wp and everything related to it to 0
 - `444d60` mainly updates the values of everything in the diagram above. very important function to look at.
-- - `4463a0` calls `444d60`.
+- - called by `4463a0`
+- - - called by `4412c0`. sets ESI to `0x77bf34`
 - `44c3f0` is called when the game is paused (press Start). sets `g_ISPAUSED` to 1.
 - `44c8f0` is called when the game is unpaused (exit pause menu). sets `g_ISPAUSED` to 0.
 - `48e0a0` "handles inputs (i believe, im not sure)".

@@ -1,9 +1,9 @@
-// memory_block.h: Memory handling utilities
+// MemoryBlock.h: Memory handling utilities
 #pragma once
 
-// This class is basically a wrapper for a memory address, treating it as an
-// actual  object that is much easier to manipulate than, say, constants in a
-// huge .h/.hpp file.
+// This class is basically a wrapper for a static memory address, treating it
+// as an actual object that is much easier to manipulate than, say, constants
+// in a huge .h/.hpp file.
 class MemoryBlock {
 public:
 	DWORD address; // Address of value in memory

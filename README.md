@@ -13,7 +13,7 @@ Huge thanks to [Meepster99](https://github.com/Meepster99/) for helping me with 
 ## Goals
 
 - [X] Pause the game indefinitely (gotta use the super flash freeze tech)
-- [ ] Prevent the replay from desyncing while paused
+- [X] Prevent the replay from desyncing while paused
 - [ ] Save/load state
 - [ ] Take over inputs
 - [ ] Play sounds to indicate current state of the program (about to start takeover, saved or loaded state, etc)
@@ -28,7 +28,9 @@ cd mbaacc-replay-takeover
 make
 ```
 
-You should get an executable called `takeover.exe`. Run it from your terminal alongside the game in replay mode (Offline -> Replay in CCCaster 3.1).
+You should get an executable called `takeover.exe`. Run it from your terminal alongside the game in replay mode (Main menu > Offline > Replay, in CCCaster 3.1).
+
+- Press FN1 to pause the replay. Press it again to unpause.
 
 ## License
 
