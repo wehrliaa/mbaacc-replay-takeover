@@ -8,7 +8,7 @@ Huge thanks to [Meepster99](https://github.com/Meepster99/) for helping me with 
 
 ## Note for Linux users!!!!
 
-**Due to a limitation in (or feature of) Wine, this tool and the game need to be run on the same Wine prefix**, otherwise it won't detect the game at all. So if you're running the game through Lutris, Proton, Steam, etc, you might run into issues.
+**Due to a limitation in (or feature of) Wine, this tool and the game need to be run in the same Wine prefix**, otherwise it won't detect the game at all. So if you're running the game through Lutris, Proton, Steam, etc, you might run into issues.
 
 ## Goals
 
