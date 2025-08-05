@@ -21,6 +21,12 @@ public:
 	// the replay.
 	MemoryBlock aStopFlag           = MemoryBlock(0x162A48, 1);
 
+	// literally freezes everything in place, including the input reader.
+	//MemoryBlock aStopFlag           = MemoryBlock(0x37BFF0, 1);
+
+	// This stops the replay iterator from advancing
+	MemoryBlock aStopReplayReadFlag = MemoryBlock(0x37BF30, 1);
+
 	MemoryBlock aTimer              = MemoryBlock(0x162A40, 4);
 	MemoryBlock aTrainingMenuPause  = MemoryBlock(0x162A64, 2);
 
@@ -84,11 +90,13 @@ public:
 	void
 	pause() {
 		this->aStopFlag.write_memory((char*)"\xff", 0, false);
+		this->aStopReplayReadFlag.write_memory((char*)"\x01", 0, false);
 	}
 
 	void
 	play() {
 		this->aStopFlag.write_memory((char*)"\x00", 0, false);
+		this->aStopReplayReadFlag.write_memory((char*)"\x00", 0, false);
 	}
 
 	int

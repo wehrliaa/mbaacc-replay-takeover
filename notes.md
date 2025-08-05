@@ -144,3 +144,14 @@ intro state:
 maybe it would be a better idea to call `444d00`, since that seems to be the only function capable of affecting the replay iterator. but let me try out something first.
 
 i forgot what i wanted to "try out" here but oh well.
+
+...
+
+i need to pause the characters, the replay iterator, *and* the input interpreter. as of right now, if i pause the replay while one of the players is doing a motion input, after unpausing, that move will just not come out, or come out as an A/B/C/D button instead of a special, and lead to a desync. of course this doesn't happen when the replay is paused by bringing up the pause menu, but i can't figure out what it is doing differently.
+
+i can freeze the characters in place by forcing super flash freeze. i can pause the replay iterator by setting `77bf30` to 1. well, actually there's two ways:
+
+1. save/load whatever it is that the input interpreter was "interpreting" at the moment i paused
+2. freeze the input interpreter in place
+
+just like with the replay iterator. i think freezing it in place is a more stable and elegant solution, and would allow me to have different functions for the savestate side of things. but idk, maybe both methods would work the same way

@@ -13,10 +13,14 @@ Huge thanks to [Meepster99](https://github.com/Meepster99/) for helping me with 
 ## Goals
 
 - [X] Pause the game indefinitely (gotta use the super flash freeze tech)
-- [X] Prevent the replay from desyncing while paused
+- [ ] Prevent the replay from desyncing after pausing
 - [ ] Save/load state
 - [ ] Take over inputs
 - [ ] Play sounds to indicate current state of the program (about to start takeover, saved or loaded state, etc)
+
+## Known issues
+
+- Desyncs if you pause during a motion input. For some reason the input interpreter ignores what came before pausing?
 
 ## Building and usage
 

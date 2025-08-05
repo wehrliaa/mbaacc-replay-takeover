@@ -54,12 +54,15 @@ main() {
 		// TODO: Change this to replay timer, so you can pause and take over
 		// while in intro state 1
 		global_frame_count = game_state.timer_check();
-		if (global_frame_count == prev_frame_count)
+		if (global_frame_count == prev_frame_count) {
+			Sleep(1); // Reduce CPU usage for free with this one simple trick!
 			continue;
+		}
 		prev_frame_count = global_frame_count;
 
 		// Handle inputs FIRST //
 
+		// FN1
 		FN1Button = game_state.aFN1Key.int_data;
 		if (FN1Button >= 1) {
 			FN1Frames += 1;
@@ -78,18 +81,19 @@ main() {
 		}
 
 		if (isPaused) {
-			// save shit and pause... or maybe just pause
-			game_state.pause();
+			// save replay data and pause... or maybe just pause
 			if (!isReplayDataSaved) {
 				isReplayDataSaved = true;
-				saveReplayData(&game_state, prdArray);
+				//saveReplayData(&game_state, prdArray);
 			}
+			game_state.pause();
+
 		} else {
-			// load shit and play
+			// load replay data and play
 			if (FN1Frames == 1) {
-				game_state.play();
-				loadReplayData(&game_state, prdArray);
+				//loadReplayData(&game_state, prdArray);
 				isReplayDataSaved = false;
+				game_state.play();
 			}
 		}
 	}
