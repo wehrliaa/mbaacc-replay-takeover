@@ -16,10 +16,6 @@ The code is based on my [partial rewrite of kosunan's training tool](https://git
 - [ ] Take over inputs
 - [ ] Play sounds to indicate current state of the program (about to start takeover, saved or loaded state, etc)
 
-## Known issues
-
-- If you change or reset the round with the replay paused, it won't unpause by itself.
-
 ## Building and usage
 
 Only dependencies are MinGW-w64 and `make`.

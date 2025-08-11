@@ -54,6 +54,13 @@ main() {
 	while (1) {
 		game_state.fetch_game_data();
 
+		// Reset stuff at the start of each round
+		if (global_frame_count == 0) {
+			isPaused = false;
+			isStateSaved = false;
+			game_state.play();
+		}
+
 		// Everything below this chunk of code is synced with the game's
 		// framerate.
 		// TODO: Change this to replay timer, so you can pause and take over
@@ -81,12 +88,6 @@ main() {
 
 		// Handle state SECOND //
 		// srry im dumb i need to remind myself of this //
-
-		// Reset stuff at the start of each round
-		if (global_frame_count == 0) {
-			isPaused = false;
-			isStateSaved = false;
-		}
 
 		if (FN1Frames == 1) {
 			isPaused = !isPaused;
