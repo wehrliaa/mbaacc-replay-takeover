@@ -2,7 +2,7 @@
 #pragma once
 
 // Big big class containing every relevant memory address.
-class Game_State_Manager {
+class GameStateManager {
 public:
 	MemoryBlock aCircuitPosition    = MemoryBlock(0x15DEF0, 2);
 	MemoryBlock aCombAfterTimer     = MemoryBlock(0x36E708, 2);
@@ -15,6 +15,7 @@ public:
 	MemoryBlock aMaxDamage          = MemoryBlock(0x157E0C, 4);
 	MemoryBlock aRecordingMode      = MemoryBlock(0x155137, 2);
 	MemoryBlock aRoundReset         = MemoryBlock(0x15DEC3, 1);
+	MemoryBlock aEXFlashTimer       = MemoryBlock(0x162A48, 4);
 
 	// NOPing these two addresses effectively pauses the game. It's not a
 	// pretty solution, but I need these functions to not be called, and the
@@ -43,7 +44,7 @@ public:
 	std::vector<MemoryBlock> mem_pairs_list;
 
 	// DONT FORGET TO ADD NEW ADDRESSES HERE!!!!!!!!!!!!!!!!!!!!
-	Game_State_Manager() {
+	GameStateManager() {
 		mem_pairs_list.push_back(this->aCircuitPosition);
 		mem_pairs_list.push_back(this->aCombAfterTimer);
 		mem_pairs_list.push_back(this->aDisableFN1_1_AD);
@@ -60,6 +61,7 @@ public:
 		mem_pairs_list.push_back(this->aFnCall2);
 		mem_pairs_list.push_back(this->aRoundNumber);
 		mem_pairs_list.push_back(this->aTrainingMenuPause);
+		mem_pairs_list.push_back(this->aEXFlashTimer);
 
 		this->aDisableFN1_1_AD.write_memory((char*)"\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90", 0x41F654, true);
 		this->aDisableFN1_2_AD.write_memory((char*)"\x90\x90", 0x41F654, true);
@@ -92,6 +94,7 @@ public:
 		// NOP IT ALLLLLL!!!!!!!! WRRRRRRRAAAAAAAAAAAAAAAAAAHHHHHHHHHHH!!!!!!
 		this->aFnCall1.write_memory((char*)"\x90\x90\x90\x90\x90", 0, false);
 		this->aFnCall2.write_memory((char*)"\x90\x90\x90\x90\x90", 0, false);
+		this->aEXFlashTimer.read_memory(false);
 	}
 
 	void

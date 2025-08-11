@@ -21,7 +21,7 @@ struct PlayerReplayData {              // 32 (0x20) bytes long
 };
 
 void
-saveReplayData(Game_State_Manager* gsm, struct PlayerReplayData (&prdArray)[6][2]) {
+saveReplayData(GameStateManager* gsm, struct PlayerReplayData (&prdArray)[6][2]) {
 	int pointerToRoundStuff;
 	int pointerToSomeOtherThing;
 	int roundNumber;
@@ -43,7 +43,7 @@ saveReplayData(Game_State_Manager* gsm, struct PlayerReplayData (&prdArray)[6][2
 }
 
 void
-loadReplayData(Game_State_Manager* gsm, struct PlayerReplayData (&prdArray)[6][2]) {
+loadReplayData(GameStateManager* gsm, struct PlayerReplayData (&prdArray)[6][2]) {
 	int pointerToRoundStuff;
 	int pointerToSomeOtherThing;
 	int roundNumber;

@@ -20,6 +20,6 @@
 #include "ProcessHandling.h"
 #include "MemoryBlock.h"
 #include "cli.h"
-#include "SaveStateManager.h"
 #include "GameStateManager.h"
+#include "SaveStateManager.h"
 #include "PlayerReplayData.h"

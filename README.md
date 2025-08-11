@@ -18,7 +18,6 @@ The code is based on my [partial rewrite of kosunan's training tool](https://git
 
 ## Known issues
 
-- Desyncs if you pause/unpause during super flash.
 - If you change or reset the round with the replay paused, it won't unpause by itself.
 
 ## Building and usage

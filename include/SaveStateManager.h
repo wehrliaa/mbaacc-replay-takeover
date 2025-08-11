@@ -1,6 +1,6 @@
 // SaveStateManager.h: Savestate-related code
 
-class Save_State_Manager {
+class SaveStateManager {
 	// キャラクター構造体のサイズを定義
 	DWORD PlayerStructSize = 0xAFC; // 3084 (?)
 	// 1Pデータの開始位置を定義
@@ -16,6 +16,7 @@ class Save_State_Manager {
 	MemoryBlock aDamage2           = MemoryBlock(0x157E10, 1004);
 	MemoryBlock aShiftControlFlag1 = MemoryBlock(0x157DB8, 4);
 	MemoryBlock aShiftControlFlag2 = MemoryBlock(0x157DBC, 4);
+	MemoryBlock aEXFlashTimer      = MemoryBlock(0x162A48, 4);
 	MemoryBlock aCharacterObj1     = MemoryBlock(this->DAT_P1_AD, this->PlayerStructSize);
 	MemoryBlock aCharacterObj2     = MemoryBlock(this->DAT_P1_AD + (this->PlayerStructSize * 1), this->PlayerStructSize);
 	MemoryBlock aCharacterObj3     = MemoryBlock(this->DAT_P1_AD + (this->PlayerStructSize * 2), this->PlayerStructSize);
@@ -24,8 +25,10 @@ class Save_State_Manager {
 	std::vector<MemoryBlock> mem_pairs_list;
 
 public:
+	int EXFlashTimer = 0;
+
 	// Feio pra caralho, eu sei
-	Save_State_Manager() {
+	SaveStateManager() {
 		mem_pairs_list.push_back(this->aCam1X);
 		mem_pairs_list.push_back(this->aCam1Y);
 		mem_pairs_list.push_back(this->aCam2X);
@@ -43,9 +46,11 @@ public:
 	}
 
 	void
-	save() {
+	save(GameStateManager* gsm) {
 		for (MemoryBlock i : this->mem_pairs_list)
 			i.read_memory(false);
+
+		this->EXFlashTimer = gsm->aEXFlashTimer.int_data;
 	}
 	
 	void

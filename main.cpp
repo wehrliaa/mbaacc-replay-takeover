@@ -38,14 +38,15 @@ main() {
 	int FN2Frames;
 
 	// Game state-related variables
-	Game_State_Manager game_state;
+	GameStateManager game_state;
 	bool isPaused = false;
 	int global_frame_count = 0;
 	int prev_frame_count = 0;
 
 	// Save state-related variables
-	Save_State_Manager save_state;
+	SaveStateManager save_state;
 	bool isStateSaved = false;
+	bool loadedState = false;
 
 	// Maximum of 6 rounds, 2 players
 	struct PlayerReplayData prdArray[6][2];
@@ -90,22 +91,34 @@ main() {
 		if (FN1Frames == 1) {
 			isPaused = !isPaused;
 
-			if (isPaused)
+			if (isPaused) {
 				game_state.pause();
-			else
+			} else {
+				// Very ugly way to prevent desyncs when pausing during EX flash
+				if (loadedState) {
+					char buf[4];
+					memcpy(&buf, &save_state.EXFlashTimer, 4);
+					game_state.aEXFlashTimer.write_memory(buf, 0, false);
+					loadedState = false;
+				} else {
+					game_state.aEXFlashTimer.write_memory(NULL, 0, false);
+				}
+
 				game_state.play();
+			}
 		}
 
 		if (FN2Frames == 1) {
 			if (isPaused) {
 				// save state
-				save_state.save();
+				save_state.save(&game_state);
 				saveReplayData(&game_state, prdArray);
 				isStateSaved = true;
 			} else {
 				// load state and pause.
 				if (isStateSaved) {
 					isPaused = true;
+					loadedState = true;
 					game_state.pause();
 					save_state.load();
 					loadReplayData(&game_state, prdArray);
