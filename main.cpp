@@ -55,7 +55,7 @@ main() {
 		// while in intro state 1
 		global_frame_count = game_state.timer_check();
 		if (global_frame_count == prev_frame_count) {
-			Sleep(1); // Reduce CPU usage for free with this one simple trick!
+			Sleep(2); // Reduce CPU usage for free with this one simple trick!
 			continue;
 		}
 		prev_frame_count = global_frame_count;
@@ -66,9 +66,6 @@ main() {
 		FN1Button = game_state.aFN1Key.int_data;
 		if (FN1Button >= 1) {
 			FN1Frames += 1;
-			if (FN1Frames == 1) { // Not being held
-				isPaused = !isPaused;
-			}
 		} else FN1Frames = 0;
 
 		// Handle state SECOND //
@@ -80,21 +77,13 @@ main() {
 			isReplayDataSaved = false;
 		}
 
-		if (isPaused) {
-			// save replay data and pause... or maybe just pause
-			if (!isReplayDataSaved) {
-				isReplayDataSaved = true;
-				//saveReplayData(&game_state, prdArray);
-			}
-			game_state.pause();
+		if (FN1Frames == 1) {
+			isPaused = !isPaused;
 
-		} else {
-			// load replay data and play
-			if (FN1Frames == 1) {
-				//loadReplayData(&game_state, prdArray);
-				isReplayDataSaved = false;
+			if (isPaused)
+				game_state.pause();
+			else
 				game_state.play();
-			}
 		}
 	}
 

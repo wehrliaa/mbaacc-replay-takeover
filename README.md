@@ -12,8 +12,8 @@ Huge thanks to [Meepster99](https://github.com/Meepster99/) for helping me with 
 
 ## Goals
 
-- [X] Pause the game indefinitely (gotta use the super flash freeze tech)
-- [ ] Prevent the replay from desyncing after pausing
+- [X] Pause the game indefinitely
+- [X] Prevent the replay from desyncing after pausing
 - [ ] Save/load state
 - [ ] Take over inputs
 - [ ] Play sounds to indicate current state of the program (about to start takeover, saved or loaded state, etc)

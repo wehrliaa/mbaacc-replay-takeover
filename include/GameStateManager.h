@@ -16,16 +16,16 @@ public:
 	MemoryBlock aRecordingMode      = MemoryBlock(0x155137, 2);
 	MemoryBlock aRoundReset         = MemoryBlock(0x15DEC3, 1);
 
-	// This is actually related to the super flash screen freeze, which is why
-	// "pausing" the game by setting this to something bigger than 0 desyncs
-	// the replay.
-	MemoryBlock aStopFlag           = MemoryBlock(0x162A48, 1);
-
-	// literally freezes everything in place, including the input reader.
-	//MemoryBlock aStopFlag           = MemoryBlock(0x37BFF0, 1);
-
-	// This stops the replay iterator from advancing
-	MemoryBlock aStopReplayReadFlag = MemoryBlock(0x37BF30, 1);
+	// NOPing these two addresses effectively pauses the game. It's not a
+	// pretty solution, but I need these functions to not be called, and the
+	// only other way to do that (modifying global vars) crashes the game.
+	// Most importantly, this is the only way, that I know of, to pause the
+	// game while avoiding all potential desyncs, and not ignore all inputs.
+	//
+	// This place in the binary calls the function at 4745e0
+	MemoryBlock aFnCall1            = MemoryBlock(0x02373d, 5);
+	// This place in the binary calls the function at 46db40
+	MemoryBlock aFnCall2            = MemoryBlock(0x023742, 5);
 
 	MemoryBlock aTimer              = MemoryBlock(0x162A40, 4);
 	MemoryBlock aTrainingMenuPause  = MemoryBlock(0x162A64, 2);
@@ -55,8 +55,10 @@ public:
 		mem_pairs_list.push_back(this->aMaxDamage);
 		mem_pairs_list.push_back(this->aRecordingMode);
 		mem_pairs_list.push_back(this->aRoundReset);
-		mem_pairs_list.push_back(this->aStopFlag);
 		mem_pairs_list.push_back(this->aTimer);
+		mem_pairs_list.push_back(this->aFnCall1);
+		mem_pairs_list.push_back(this->aFnCall2);
+		mem_pairs_list.push_back(this->aRoundNumber);
 		mem_pairs_list.push_back(this->aTrainingMenuPause);
 
 		this->aDisableFN1_1_AD.write_memory((char*)"\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90", 0x41F654, true);
@@ -89,14 +91,16 @@ public:
 
 	void
 	pause() {
-		this->aStopFlag.write_memory((char*)"\xff", 0, false);
-		this->aStopReplayReadFlag.write_memory((char*)"\x01", 0, false);
+		// NOP IT ALLLLLL!!!!!!!! WRRRRRRRAAAAAAAAAAAAAAAAAAHHHHHHHHHHH!!!!!!
+		this->aFnCall1.write_memory((char*)"\x90\x90\x90\x90\x90", 0, false);
+		this->aFnCall2.write_memory((char*)"\x90\x90\x90\x90\x90", 0, false);
 	}
 
 	void
 	play() {
-		this->aStopFlag.write_memory((char*)"\x00", 0, false);
-		this->aStopReplayReadFlag.write_memory((char*)"\x00", 0, false);
+		// Actually nevermind un-NOP it please thank you very much
+		this->aFnCall1.write_memory((char*)"\xe8\x9e\x0e\x05\x00", 0, false);
+		this->aFnCall2.write_memory((char*)"\xe8\xf9\xa3\x04\x00", 0, false);
 	}
 
 	int
