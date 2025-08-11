@@ -73,10 +73,8 @@ public:
 	void
 	fetch_game_data() {
 		this->aFN1Key.read_memory(false);
-		//this->aFN2Key.read_memory(false);
-		//this->aDummyState.read_memory(false);
+		this->aFN2Key.read_memory(false);
 		this->aGameMode.read_memory(false);
-		//this->aTimer.read_memory(false);
 	}
 
 	int

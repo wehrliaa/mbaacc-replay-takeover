@@ -14,7 +14,7 @@ Huge thanks to [Meepster99](https://github.com/Meepster99/) for helping me with 
 
 - [X] Pause the game indefinitely
 - [X] Prevent the replay from desyncing after pausing
-- [ ] Save/load state
+- [X] Save/load state
 - [ ] Take over inputs
 - [ ] Play sounds to indicate current state of the program (about to start takeover, saved or loaded state, etc)
 
@@ -35,6 +35,7 @@ make
 You should get an executable called `takeover.exe`. Run it from your terminal alongside the game in replay mode (Main menu > Offline > Replay, in CCCaster 3.1).
 
 - Press FN1 to pause the replay. Press it again to unpause.
+- Press FN2 to (with the game paused) save state or (with the game unpaused) load state.
 
 ## License
 

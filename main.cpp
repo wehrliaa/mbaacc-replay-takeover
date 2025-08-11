@@ -34,14 +34,18 @@ main() {
 	// Input-related variables
 	int FN1Button;
 	int FN1Frames;
+	int FN2Button;
+	int FN2Frames;
 
 	// Game state-related variables
-	Save_State_Manager save_state;
 	Game_State_Manager game_state;
 	bool isPaused = false;
-	bool isReplayDataSaved = false;
 	int global_frame_count = 0;
 	int prev_frame_count = 0;
+
+	// Save state-related variables
+	Save_State_Manager save_state;
+	bool isStateSaved = false;
 
 	// Maximum of 6 rounds, 2 players
 	struct PlayerReplayData prdArray[6][2];
@@ -68,13 +72,19 @@ main() {
 			FN1Frames += 1;
 		} else FN1Frames = 0;
 
+		// FN2
+		FN2Button = game_state.aFN2Key.int_data;
+		if (FN2Button >= 1) {
+			FN2Frames += 1;
+		} else FN2Frames = 0;
+
 		// Handle state SECOND //
 		// srry im dumb i need to remind myself of this //
 
 		// Reset stuff at the start of each round
 		if (global_frame_count == 0) {
 			isPaused = false;
-			isReplayDataSaved = false;
+			isStateSaved = false;
 		}
 
 		if (FN1Frames == 1) {
@@ -84,6 +94,23 @@ main() {
 				game_state.pause();
 			else
 				game_state.play();
+		}
+
+		if (FN2Frames == 1) {
+			if (isPaused) {
+				// save state
+				save_state.save();
+				saveReplayData(&game_state, prdArray);
+				isStateSaved = true;
+			} else {
+				// load state and pause.
+				if (isStateSaved) {
+					isPaused = true;
+					game_state.pause();
+					save_state.load();
+					loadReplayData(&game_state, prdArray);
+				}
+			}
 		}
 	}
 

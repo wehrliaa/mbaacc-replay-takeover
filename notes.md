@@ -107,6 +107,7 @@ struct PlayerReplayData {      // 32 (0x20) bytes long
 `77bf34+64` holds the address to something
 `77bf34+70` is the current round number (zero-indexed)
 `[77bf34+64]+120` holds the address leading to the start of PlayerReplayData stuff
+`[77bf34+64]+12c + (N * 140)` holds round N's st.
 
 ## relevant functions found with ghidra
 
@@ -121,7 +122,20 @@ Assuming the game is in replay mode (actually watching a replay, not the replay 
 - - - called by `4412c0`. sets ESI to `0x77bf34`
 - `44c3f0` is called when the game is paused (press Start). sets `g_ISPAUSED` to 1.
 - `44c8f0` is called when the game is unpaused (exit pause menu). sets `g_ISPAUSED` to 0.
-- `48e0a0` "handles inputs (i believe, im not sure)".
+- `48e0a0` "handles inputs (i believe, im not sure)". looked through everything and only found a variable that's like a bitmask of menu controls
+
+- `46db40` is ControlCharacter. Calls `46d7a0` (ReadCharacterInputs) before calling...
+- - `4412c0`. sets ESI to `0x77bf34`. calls `4463a0` only if `77bf30` is set to 0. setting it to 1 causes the replay iterator stuff to not move forward at all, making both players just hold the current input forever.
+- - - `4463a0` does something.
+- - - - `444d60` mainly updates the values of each player's `PlayerReplayData` struct, or something related to that. very important function to look at.
+
+look into ControlCharacter and anything relating to interpreting inputs.
+
+Man I wanted to see what View Screen does but I can't find- nvm I found it but it's been pretty inconclusive.
+
+I've been staring at the pause menu functions for a while now, with no progress at all. Maybe I should just try to make my own bootleg pause function, which is what has worked so far. Again, I can pause the characters in place, I can pause the replay iterators in place, but I can't pause the input interpreter in place. Also, I'm gonna need a way to save and load whatever the input interpreter is interpreting at the moment, so that savestates can work. Ughhhhhhhhhhhhhhhhhhhhh. Or I can load it every frame when the game is paused. It works that way too.
+
+dude. what if i just nop 42373d and 423742, and pause the game like that?
 
 # numbers in MBAA.CT (Cheat Engine)
 
@@ -155,3 +169,7 @@ i can freeze the characters in place by forcing super flash freeze. i can pause 
 2. freeze the input interpreter in place
 
 just like with the replay iterator. i think freezing it in place is a more stable and elegant solution, and would allow me to have different functions for the savestate side of things. but idk, maybe both methods would work the same way
+
+it's not in CharacterObj. loading the entire thing for both players (save state) doesn't fix the issue. i guess i really do need to replicate the pause menu function.
+
+turns out i wasn't loading the entire thing.

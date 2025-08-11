@@ -16,10 +16,10 @@ class Save_State_Manager {
 	MemoryBlock aDamage2           = MemoryBlock(0x157E10, 1004);
 	MemoryBlock aShiftControlFlag1 = MemoryBlock(0x157DB8, 4);
 	MemoryBlock aShiftControlFlag2 = MemoryBlock(0x157DBC, 4);
-	MemoryBlock aDmpData1          = MemoryBlock(this->DAT_P1_AD, 971);
-	MemoryBlock aDmpData2          = MemoryBlock(this->DAT_P1_AD + (this->PlayerStructSize * 1), 971);
-	MemoryBlock aDmpData3          = MemoryBlock(this->DAT_P1_AD + (this->PlayerStructSize * 2), 971);
-	MemoryBlock aDmpData4          = MemoryBlock(this->DAT_P1_AD + (this->PlayerStructSize * 3), 971);
+	MemoryBlock aCharacterObj1     = MemoryBlock(this->DAT_P1_AD, this->PlayerStructSize);
+	MemoryBlock aCharacterObj2     = MemoryBlock(this->DAT_P1_AD + (this->PlayerStructSize * 1), this->PlayerStructSize);
+	MemoryBlock aCharacterObj3     = MemoryBlock(this->DAT_P1_AD + (this->PlayerStructSize * 2), this->PlayerStructSize);
+	MemoryBlock aCharacterObj4     = MemoryBlock(this->DAT_P1_AD + (this->PlayerStructSize * 3), this->PlayerStructSize);
 
 	std::vector<MemoryBlock> mem_pairs_list;
 
@@ -36,10 +36,10 @@ public:
 		mem_pairs_list.push_back(this->aDamage2);
 		mem_pairs_list.push_back(this->aShiftControlFlag1);
 		mem_pairs_list.push_back(this->aShiftControlFlag2);
-		mem_pairs_list.push_back(this->aDmpData1);
-		mem_pairs_list.push_back(this->aDmpData2);
-		mem_pairs_list.push_back(this->aDmpData3);
-		mem_pairs_list.push_back(this->aDmpData4);
+		mem_pairs_list.push_back(this->aCharacterObj1);
+		mem_pairs_list.push_back(this->aCharacterObj2);
+		mem_pairs_list.push_back(this->aCharacterObj3);
+		mem_pairs_list.push_back(this->aCharacterObj4);
 	}
 
 	void
