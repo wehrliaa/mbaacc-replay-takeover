@@ -27,6 +27,7 @@ public:
 	MemoryBlock aFnCall1            = MemoryBlock(0x02373d, 5);
 	// This place in the binary calls the function at 46db40
 	MemoryBlock aFnCall2            = MemoryBlock(0x023742, 5);
+	MemoryBlock aFnCall3            = MemoryBlock(0x0237b1, 5);
 
 	MemoryBlock aTimer              = MemoryBlock(0x162A40, 4);
 	MemoryBlock aTrainingMenuPause  = MemoryBlock(0x162A64, 2);
@@ -94,6 +95,7 @@ public:
 		// NOP IT ALLLLLL!!!!!!!! WRRRRRRRAAAAAAAAAAAAAAAAAAHHHHHHHHHHH!!!!!!
 		this->aFnCall1.write_memory((char*)"\x90\x90\x90\x90\x90", 0, false);
 		this->aFnCall2.write_memory((char*)"\x90\x90\x90\x90\x90", 0, false);
+		this->aFnCall3.write_memory((char*)"\x90\x90\x90\x90\x90", 0, false);
 		this->aEXFlashTimer.read_memory(false);
 	}
 
@@ -102,6 +104,7 @@ public:
 		// Actually nevermind un-NOP it please thank you very much
 		this->aFnCall1.write_memory((char*)"\xe8\x9e\x0e\x05\x00", 0, false);
 		this->aFnCall2.write_memory((char*)"\xe8\xf9\xa3\x04\x00", 0, false);
+		this->aFnCall3.write_memory((char*)"\xe8\xca\x03\x03\x00", 0, false);
 	}
 
 	int
