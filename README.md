@@ -1,6 +1,6 @@
 # MBAACC Replay Takeover
 
-This is an attempt at implementing replay takeover for Melty Blood Actress Again Current Code, community edition.
+This is a very simple implementation of replay takeover for Melty Blood Actress Again Current Code, community edition.
 
 The code is based on my [partial rewrite of kosunan's training tool](https://github.com/wehrliaa/mbaacc-training-linux).
 
