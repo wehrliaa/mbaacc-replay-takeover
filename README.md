@@ -13,7 +13,7 @@ The code is based on my [partial rewrite of kosunan's training tool](https://git
 - [X] Pause the game indefinitely
 - [X] Prevent the replay from desyncing after pausing
 - [X] Save/load state
-- [ ] Take over inputs
+- [X] Take over inputs
 - [ ] Play sounds to indicate current state of the program (about to start takeover, saved or loaded state, etc)
 
 ## Building and usage
@@ -26,14 +26,25 @@ cd mbaacc-replay-takeover
 make
 ```
 
-You should get an executable called `takeover.exe`. Run it alongside the game in replay mode (Main menu > Offline > Replay, in CCCaster 3.1).
+You should get an executable called `takeover.exe`. Run it alongside the game in replay mode (Offline > Replay, in CCCaster 3.1).
 
 **Linux users**: Run it from your terminal with Wine, Proton, whatever you use.
 
 ## Controls
 
-- Press FN1 to pause the replay. Press it again to unpause.
-- Press FN2 to (with the game paused) save state or (with the game unpaused) load state.
+With the replay unpaused:
+
+- Press FN1 to pause the replay.
+
+With the replay paused:
+
+- Press FN1 to unpause.
+- Press B to take over Player 1's actions.
+- Press C to take over Player 2's actions.
+
+While taking over:
+
+- Press FN1 to go back to where you first paused before taking over, and pause the replay.
 
 ## Acknowledgements
 

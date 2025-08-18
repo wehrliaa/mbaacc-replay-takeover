@@ -32,10 +32,12 @@ main() {
  	gProc = wait_process("MBAA.exe");
 
 	// Input-related variables
+	int BButton;
+	int BFrames;
+	int CButton;
+	int CFrames;
 	int FN1Button;
 	int FN1Frames;
-	int FN2Button;
-	int FN2Frames;
 
 	// Game state-related variables
 	GameStateManager game_state;
@@ -45,27 +47,29 @@ main() {
 
 	// Save state-related variables
 	SaveStateManager save_state;
-	bool isStateSaved = false;
+	struct PlayerReplayData prdArray[6][2]; // Maximum of 6 rounds, 2 players
 	bool loadedState = false;
 
-	// Maximum of 6 rounds, 2 players
-	struct PlayerReplayData prdArray[6][2];
+	// Takeover-related variables
+	bool isTakingOver = false;
 
 	while (1) {
 		game_state.fetch_game_data();
+		global_frame_count = game_state.timer_check();
 
 		// Reset stuff at the start of each round
 		if (global_frame_count == 0) {
 			isPaused = false;
-			isStateSaved = false;
 			game_state.play();
+
+			isTakingOver = false;
+			game_state.untakeover();
 		}
 
 		// Everything below this chunk of code is synced with the game's
 		// framerate.
 		// TODO: Change this to replay timer, so you can pause and take over
 		// while in intro state 1
-		global_frame_count = game_state.timer_check();
 		if (global_frame_count == prev_frame_count) {
 			Sleep(2); // Reduce CPU usage for free with this one simple trick!
 			continue;
@@ -80,50 +84,76 @@ main() {
 			FN1Frames += 1;
 		} else FN1Frames = 0;
 
-		// FN2
-		FN2Button = game_state.aFN2Key.int_data;
-		if (FN2Button >= 1) {
-			FN2Frames += 1;
-		} else FN2Frames = 0;
+		// B
+		BButton = game_state.aBKey.int_data;
+		if (BButton >= 1) {
+			BFrames += 1;
+		} else BFrames = 0;
+
+		// C
+		CButton = game_state.aCKey.int_data;
+		if (CButton >= 1) {
+			CFrames += 1;
+		} else CFrames = 0;
 
 		// Handle state SECOND //
 		// srry im dumb i need to remind myself of this //
 
 		if (FN1Frames == 1) {
-			isPaused = !isPaused;
+			if (!isTakingOver) {
+				isPaused = !isPaused;
 
-			if (isPaused) {
-				game_state.pause();
-			} else {
-				// Very ugly way to prevent desyncs when pausing during EX flash
-				if (loadedState) {
-					char buf[4];
-					memcpy(&buf, &save_state.EXFlashTimer, 4);
-					game_state.aEXFlashTimer.write_memory(buf, 0, false);
-					loadedState = false;
+				if (isPaused) {
+					game_state.aEXFlashTimer.read_memory(false);
+					game_state.pause();
 				} else {
-					game_state.aEXFlashTimer.write_memory(NULL, 0, false);
-				}
+					// Very ugly way to prevent desyncs when unpausing during
+					// EX flash
+					if (loadedState) {
+						char buf[4];
+						memcpy(&buf, &save_state.EXFlashTimer, 4);
+						game_state.aEXFlashTimer.write_memory(buf, 0, false);
+						loadedState = false;
+					} else {
+						game_state.aEXFlashTimer.write_memory(NULL, 0, false);
+					}
 
-				game_state.play();
+					game_state.play();
+				}
+			} else {
+				// stop taking over, pause, and load state
+				isTakingOver = false;
+				game_state.untakeover();
+
+				isPaused = true;
+				game_state.pause();
+
+				loadedState = true;
+				save_state.load();
+				loadReplayData(&game_state, prdArray);
 			}
 		}
 
-		if (FN2Frames == 1) {
-			if (isPaused) {
-				// save state
-				save_state.save(&game_state);
-				saveReplayData(&game_state, prdArray);
-				isStateSaved = true;
-			} else {
-				// load state and pause.
-				if (isStateSaved) {
-					isPaused = true;
-					loadedState = true;
-					game_state.pause();
-					save_state.load();
-					loadReplayData(&game_state, prdArray);
-				}
+		if ((isPaused) && ((BFrames == 1) || (CFrames == 1))) {
+
+			// Save current state before taking over.
+			save_state.save(&game_state);
+			saveReplayData(&game_state, prdArray);
+
+			isTakingOver = true;
+
+			// If B and C are pressed on the same frame, P2 will be selected.
+			switch (CFrames == 1) {
+				case 0:
+					isPaused = false;
+					game_state.takeoverP1();
+					game_state.play();
+					break;
+				case 1:
+					isPaused = false;
+					game_state.takeoverP2();
+					game_state.play();
+					break;
 			}
 		}
 	}
