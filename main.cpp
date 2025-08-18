@@ -55,7 +55,7 @@ main() {
 
 	while (1) {
 		game_state.fetch_game_data();
-		global_frame_count = game_state.timer_check();
+		global_frame_count = game_state.aTimer.int_data;
 
 		// Reset stuff at the start of each round
 		if (global_frame_count == 0) {
