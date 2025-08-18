@@ -142,6 +142,12 @@ main() {
 
 			isTakingOver = true;
 
+			// Countdown before taking over
+			for (int i = 0; i < 3; i++) {
+				game_state.aSound1.write_memory((char*)"\x01", 0, false);
+				Sleep(500);
+			}
+
 			// If B and C are pressed on the same frame, P2 will be selected.
 			switch (CFrames == 1) {
 				case 0:

@@ -14,7 +14,7 @@ The code is based on my [partial rewrite of kosunan's training tool](https://git
 - [X] Prevent the replay from desyncing after pausing
 - [X] Save/load state
 - [X] Take over inputs
-- [ ] Play sounds to indicate current state of the program (about to start takeover, saved or loaded state, etc)
+- [X] Play sounds to indicate current state of the program (about to start takeover, saved or loaded state, etc)
 
 ## Building and usage
 
@@ -39,8 +39,7 @@ With the replay unpaused:
 With the replay paused:
 
 - Press FN1 to unpause.
-- Press B to take over Player 1's actions.
-- Press C to take over Player 2's actions.
+- Press B or C to take over Player 1's or Player 2's actions respectively. A sound will be played indicating that you're about to take over.
 
 While taking over:
 

@@ -54,6 +54,8 @@ public:
 
 	MemoryBlock aRoundNumber        = MemoryBlock(0x37BFA4, 4);
 
+	MemoryBlock aSound1             = MemoryBlock(0x36E044, 1);
+
 	GameStateManager() {
 		this->aDisableFN1_1_AD.write_memory((char*)"\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90", 0x41F654, true);
 		this->aDisableFN1_2_AD.write_memory((char*)"\x90\x90", 0x41F654, true);
