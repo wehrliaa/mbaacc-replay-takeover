@@ -15,6 +15,11 @@ The code is based on my [partial rewrite of kosunan's training tool](https://git
 - [X] Save/load state
 - [X] Take over inputs
 - [X] Play sounds to indicate current state of the program (about to start takeover, saved or loaded state, etc)
+- [ ] Replay rewind
+
+## Known issues
+
+- Combo damage seems to change after unpausing or loading a state. Maybe something to do with reverse beat?
 
 ## Building and usage
 
