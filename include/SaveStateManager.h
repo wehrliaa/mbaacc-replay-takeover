@@ -17,6 +17,7 @@ class SaveStateManager {
 	MemoryBlock aCharacterObj2     = MemoryBlock(this->DAT_P1_AD + (this->PlayerStructSize * 1), this->PlayerStructSize);
 	MemoryBlock aCharacterObj3     = MemoryBlock(this->DAT_P1_AD + (this->PlayerStructSize * 2), this->PlayerStructSize);
 	MemoryBlock aCharacterObj4     = MemoryBlock(this->DAT_P1_AD + (this->PlayerStructSize * 3), this->PlayerStructSize);
+	MemoryBlock aRoundTimer        = MemoryBlock(0x162A3C, 4);
 
 	std::vector<MemoryBlock> mem_pairs_list;
 
@@ -35,6 +36,7 @@ public:
 		mem_pairs_list.push_back(this->aCharacterObj2);
 		mem_pairs_list.push_back(this->aCharacterObj3);
 		mem_pairs_list.push_back(this->aCharacterObj4);
+		mem_pairs_list.push_back(this->aRoundTimer);
 	}
 
 	void
