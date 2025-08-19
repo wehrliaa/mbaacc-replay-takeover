@@ -4,14 +4,15 @@
 // for replay rewind to work. I'm deliberately not using MemoryBlocks here to
 // keep it as small as possible.
 struct RewindState {
-	char* aObjects            = new char [74576];
-	char* aStoppageStatus     = new char [1632];
-	char* aDamage             = new char [52];
-	char* aDamage2            = new char [1004];
-	char* aShiftControlFlag12 = new char [8];
-	char* aEXFlashTimer       = new char [4];
-	char* aCharacterObjs      = new char [11248];
-	char* aRoundTimer         = new char [4];
+	char aObjects[74576];
+	char aStoppageStatus[1632];
+	char aDamage[52];
+	char aDamage2[1004];
+	char aShiftControlFlag12[8];
+	char aEXFlashTimer[4];
+	char aCharacterObjs[11248];
+	char aRoundTimer[4];
+
 	struct PlayerReplayData prd[6][2];
 };
 

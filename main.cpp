@@ -56,7 +56,8 @@ main() {
 	bool isTakingOver = false;
 
 	// Rewind-related variables
-	struct RewindState rewindPool[600]; // ~53MB of memory total
+	// ~53MB of memory in total
+	struct RewindState* rewindPool = new struct RewindState [600];
 	int rewindIndex = 0;
 	int rewindCount = 0;
 
