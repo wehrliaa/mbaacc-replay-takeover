@@ -62,7 +62,14 @@ main() {
 	int rewindSaveCount = 0;
 	int rewindLoadCount = 0;
 
+	// Process stuff
+	DWORD exitCode = 0;
+
 	while (1) {
+		// Close if game has been closed.
+		GetExitCodeProcess(gProc.handle, &exitCode);
+		if (gProc.handle == 0x0 || exitCode != 259) break;
+
 		game_state.fetch_game_data();
 		global_frame_count = game_state.aTimer.int_data;
 
@@ -207,5 +214,5 @@ main() {
 		}
 	}
 
-	return 0;
+	signal_handler(0);
 }
