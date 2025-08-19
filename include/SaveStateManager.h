@@ -6,10 +6,6 @@ class SaveStateManager {
 	// 1Pデータの開始位置を定義
 	DWORD DAT_P1_AD = 0x155140;     // 971 bytes
 
-	//MemoryBlock aCam1X             = MemoryBlock(0x164B14, 4);
-	//MemoryBlock aCam1Y             = MemoryBlock(0x164B18, 4);
-	//MemoryBlock aCam2X             = MemoryBlock(0x15DEC4, 4);
-	//MemoryBlock aCam2Y             = MemoryBlock(0x15DEC8, 4);
 	MemoryBlock aObjects           = MemoryBlock(0x27BD70, 74576);
 	MemoryBlock aStoppageStatus    = MemoryBlock(0x158600, 1632);
 	MemoryBlock aDamage            = MemoryBlock(0x157DD8, 52);
@@ -29,10 +25,6 @@ public:
 
 	// Feio pra caralho, eu sei
 	SaveStateManager() {
-		//mem_pairs_list.push_back(this->aCam1X);
-		//mem_pairs_list.push_back(this->aCam1Y);
-		//mem_pairs_list.push_back(this->aCam2X);
-		//mem_pairs_list.push_back(this->aCam2Y);
 		mem_pairs_list.push_back(this->aObjects);
 		mem_pairs_list.push_back(this->aStoppageStatus);
 		mem_pairs_list.push_back(this->aDamage);
@@ -41,8 +33,8 @@ public:
 		mem_pairs_list.push_back(this->aShiftControlFlag2);
 		mem_pairs_list.push_back(this->aCharacterObj1);
 		mem_pairs_list.push_back(this->aCharacterObj2);
-		//mem_pairs_list.push_back(this->aCharacterObj3);
-		//mem_pairs_list.push_back(this->aCharacterObj4);
+		mem_pairs_list.push_back(this->aCharacterObj3);
+		mem_pairs_list.push_back(this->aCharacterObj4);
 	}
 
 	void
