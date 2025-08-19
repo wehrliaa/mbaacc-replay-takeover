@@ -37,19 +37,9 @@ You should get an executable called `takeover.exe`. Run it alongside the game in
 
 ## Controls
 
-With the replay unpaused:
-
-- Press FN1 to pause the replay.
-- Hold D to rewind for a maximum of 20 seconds.
-
-With the replay paused:
-
-- Press FN1 to unpause.
-- Press B or C to take over Player 1's or Player 2's actions respectively. A sound will be played indicating that you're about to take over.
-
-While taking over:
-
-- Press FN1 to go back to where you first paused before taking over, and pause the replay.
+- FN1: Pauses and unpauses the replay, and while taking over, goes back to where you last paused.
+- B and C: With the game paused, takes over Player 1's or Player 2's actions respectively, after a little countdown.
+- D: Rewinds the replay, for a maximum of 20 seconds (to save memory).
 
 ## Acknowledgements
 
