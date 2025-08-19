@@ -6,7 +6,7 @@ The code is based on my [partial rewrite of kosunan's training tool](https://git
 
 ## Note for Linux users!!!!
 
-**Due to a limitation in (or feature of) Wine, this tool and the game need to be run in the same Wine prefix**, otherwise it won't detect the game at all. So if you're running the game through Lutris, Proton, Steam, etc, you might run into issues.
+**Due to a limitation in (or feature of) Wine, this tool and the game need to be run in the same Wine prefix**, otherwise it won't detect the game at all. So if you're running the game through Lutris, Proton, Steam, etc, you might have to tweak some stuff to make it work.
 
 ## Goals
 
