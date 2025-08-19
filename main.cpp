@@ -30,6 +30,13 @@ main() {
 
 	system("cls");
  	gProc = wait_process("MBAA.exe");
+	
+	printf("\n\033[92mFN1\033[m    = Pauses and unpauses the replay, and while taking over,\n");
+	printf("         goes back to where you last paused.\n\n");
+	printf("\033[92mB or C\033[m = With the game paused, takes over Player 1's or Player\n");
+	printf("         2's actions respectively, after a little countdown.\n\n");
+	printf("\033[92mD\033[m      = Rewinds the replay for a maximum of 20 seconds (to\n");
+	printf("         save memory).\n\n");
 
 	// Input-related variables
 	int BButton;
