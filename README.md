@@ -15,7 +15,7 @@ The code is based on my [partial rewrite of kosunan's training tool](https://git
 - [X] Save/load state
 - [X] Take over inputs
 - [X] Play sounds to indicate current state of the program (about to start takeover, saved or loaded state, etc)
-- [ ] Replay rewind
+- [X] Replay rewind
 
 ## Known issues
 
@@ -40,6 +40,7 @@ You should get an executable called `takeover.exe`. Run it alongside the game in
 With the replay unpaused:
 
 - Press FN1 to pause the replay.
+- Hold D to rewind for a maximum of 20 seconds.
 
 With the replay paused:
 

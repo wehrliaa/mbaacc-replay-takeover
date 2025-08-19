@@ -23,3 +23,4 @@
 #include "GameStateManager.h"
 #include "SaveStateManager.h"
 #include "PlayerReplayData.h"
+#include "RewindSystem.h"

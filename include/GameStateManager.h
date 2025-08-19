@@ -10,6 +10,7 @@ public:
 	MemoryBlock aFN2Key             = MemoryBlock(0x37144D, 1);
 	MemoryBlock aBKey               = MemoryBlock(0x37139A, 1);
 	MemoryBlock aCKey               = MemoryBlock(0x37139B, 1);
+	MemoryBlock aDKey               = MemoryBlock(0x37139C, 1);
 	MemoryBlock aGameMode           = MemoryBlock(0x14EEE8, 2);
 	MemoryBlock aEXFlashTimer       = MemoryBlock(0x162A48, 1);
 
@@ -66,6 +67,7 @@ public:
 		this->aFN1Key.read_memory(false);
 		this->aBKey.read_memory(false);
 		this->aCKey.read_memory(false);
+		this->aDKey.read_memory(false);
 		this->aGameMode.read_memory(false);
 		this->aTimer.read_memory(false);
 	}

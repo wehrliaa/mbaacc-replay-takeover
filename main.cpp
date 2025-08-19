@@ -36,6 +36,8 @@ main() {
 	int BFrames;
 	int CButton;
 	int CFrames;
+	int DButton;
+	int DFrames;
 	int FN1Button;
 	int FN1Frames;
 
@@ -53,6 +55,11 @@ main() {
 	// Takeover-related variables
 	bool isTakingOver = false;
 
+	// Rewind-related variables
+	struct RewindState rewindPool[600]; // ~53MB of memory total
+	int rewindIndex = 0;
+	int rewindCount = 0;
+
 	while (1) {
 		game_state.fetch_game_data();
 		global_frame_count = game_state.aTimer.int_data;
@@ -64,6 +71,9 @@ main() {
 
 			isTakingOver = false;
 			game_state.untakeover();
+
+			rewindIndex = 0;
+			rewindCount = 0;
 		}
 
 		// Everything below this chunk of code is synced with the game's
@@ -95,6 +105,12 @@ main() {
 		if (CButton >= 1) {
 			CFrames += 1;
 		} else CFrames = 0;
+
+		// D
+		DButton = game_state.aDKey.int_data;
+		if (DButton >= 1) {
+			DFrames += 1;
+		} else DFrames = 0;
 
 		// Handle state SECOND //
 		// srry im dumb i need to remind myself of this //
@@ -160,6 +176,26 @@ main() {
 					game_state.takeoverP2();
 					game_state.play();
 					break;
+			}
+		}
+
+		// Replay rewind
+		if ((!isTakingOver) && (!isPaused)) {
+			if (DButton >= 1) {
+				if ((rewindCount < 600) && (rewindIndex > 0)) {
+					rewindCount += 1;
+					rewindIndex = (rewindIndex - 1) % 600;
+				}
+
+				loadRewind(&game_state, &rewindPool[rewindIndex]);
+			} else {
+				rewindCount = 0;
+				// Save every other frame to use twice less memory. And also
+				// to rewind twice as fast.
+				if (global_frame_count % 2 == 0) {
+					saveRewind(&game_state, &rewindPool[rewindIndex]);
+					rewindIndex = (rewindIndex + 1) % 600;
+				}
 			}
 		}
 	}
