@@ -59,7 +59,8 @@ main() {
 	// ~53MB of memory in total
 	struct RewindState* rewindPool = new struct RewindState [600];
 	int rewindIndex = 0;
-	int rewindCount = 0;
+	int rewindSaveCount = 0;
+	int rewindLoadCount = 0;
 
 	while (1) {
 		game_state.fetch_game_data();
@@ -74,7 +75,8 @@ main() {
 			game_state.untakeover();
 
 			rewindIndex = 0;
-			rewindCount = 0;
+			rewindSaveCount = 0;
+			rewindLoadCount = 0;
 		}
 
 		// Everything below this chunk of code is synced with the game's
@@ -183,20 +185,24 @@ main() {
 		// Replay rewind
 		if ((!isTakingOver) && (!isPaused)) {
 			if (DButton >= 1) {
-				if ((rewindCount < 600) && (rewindIndex > 0)) {
-					rewindCount += 1;
-					rewindIndex = (rewindIndex - 1) % 600;
+				if (rewindLoadCount < rewindSaveCount) {
+					rewindLoadCount += 1;
+					int buf = abs((rewindIndex - 1) % 600);
+					rewindIndex = buf;
 				}
 
 				loadRewind(&game_state, &rewindPool[rewindIndex]);
 			} else {
-				rewindCount = 0;
 				// Save every other frame to use twice less memory. And also
 				// to rewind twice as fast.
 				if (global_frame_count % 2 == 0) {
+					if (rewindSaveCount < 600) rewindSaveCount += 1;
 					saveRewind(&game_state, &rewindPool[rewindIndex]);
-					rewindIndex = (rewindIndex + 1) % 600;
+					int buf = abs((rewindIndex + 1) % 600);
+					rewindIndex = buf;
 				}
+
+				rewindLoadCount = 0;
 			}
 		}
 	}
