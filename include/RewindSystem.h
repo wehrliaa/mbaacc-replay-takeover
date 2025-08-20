@@ -12,6 +12,7 @@ struct RewindState {
 	char aEXFlashTimer[4];
 	char aCharacterObjs[11248];
 	char aRoundTimer[4];
+	char aSomeKONumber[1];
 
 	struct PlayerReplayData prd[6][2];
 };
@@ -26,6 +27,7 @@ saveRewind(GameStateManager* gsm, struct RewindState* rs) {
 	ReadProcessMemory(gProc.handle, (LPVOID)(gProc.baddr + 0x162A48), rs->aEXFlashTimer, 4, NULL);
 	ReadProcessMemory(gProc.handle, (LPVOID)(gProc.baddr + 0x155140), rs->aCharacterObjs, 11248, NULL);
 	ReadProcessMemory(gProc.handle, (LPVOID)(gProc.baddr + 0x162A3C), rs->aRoundTimer, 4, NULL);
+	ReadProcessMemory(gProc.handle, (LPVOID)(gProc.baddr + 0x162A6F), rs->aSomeKONumber, 1, NULL);
 	
 	saveReplayData(gsm, rs->prd);
 }
@@ -40,6 +42,7 @@ loadRewind(GameStateManager* gsm, struct RewindState* rs) {
 	WriteProcessMemory(gProc.handle, (LPVOID)(gProc.baddr + 0x162A48), rs->aEXFlashTimer, 4, NULL);
 	WriteProcessMemory(gProc.handle, (LPVOID)(gProc.baddr + 0x155140), rs->aCharacterObjs, 11248, NULL);
 	WriteProcessMemory(gProc.handle, (LPVOID)(gProc.baddr + 0x162A3C), rs->aRoundTimer, 4, NULL);
+	WriteProcessMemory(gProc.handle, (LPVOID)(gProc.baddr + 0x162A6F), rs->aSomeKONumber, 1, NULL);
 
 	loadReplayData(gsm, rs->prd);
 }

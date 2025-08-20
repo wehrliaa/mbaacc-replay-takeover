@@ -29,6 +29,10 @@ public:
 	// prevents the A button from fastforwarding the replay.
 	MemoryBlock aFnCall4            = MemoryBlock(0x072AF3, 5);
 
+	// This place in the binary calls the function at 4737b0. NOPing it makes
+	// the inputs not be ignored after KO.
+	MemoryBlock aFnCall5            = MemoryBlock(0x074954, 5);
+
 	// Manipulating this address the right way makes the game ignore any inputs
 	// coming from the replay to a specific player. Because the game is always
 	// taking the player's inputs, and then overwriting it with inputs from the
@@ -94,20 +98,17 @@ public:
 	takeoverP1() {
 		// cmp esi,01
 		this->aIgnoreRepInputs.write_memory((char*)"\x83\xfe\x01", 0, false);
-
-		// Prevent the A button from fastforwarding the replay
 		this->aFnCall4.write_memory((char*)"\x90\x90\x90\x90\x90", 0, false);
+		this->aFnCall5.write_memory((char*)"\x90\x90\x90\x90\x90", 0, false);
 	}
 
 	void
 	takeoverP2() {
 		// cmp esi,00
 		this->aIgnoreRepInputs.write_memory((char*)"\x83\xfe\x00", 0, false);
-
-		// Prevent the A button from fastforwarding the replay
 		this->aFnCall4.write_memory((char*)"\x90\x90\x90\x90\x90", 0, false);
+		this->aFnCall5.write_memory((char*)"\x90\x90\x90\x90\x90", 0, false);
 
-		// Control P2 using P1 inputs
 		this->aJump1.write_memory((char*)"\x75\x0d", 0, false);
 		this->aJump2.write_memory((char*)"\x75\x3c", 0, false);
 		this->aCmp1.write_memory((char*)"\x81\x3d\x74\x2a\x56\x00\x01\x00\x00\x00", 0, false);
@@ -118,10 +119,9 @@ public:
 		// cmp edx,02
 		this->aIgnoreRepInputs.write_memory((char*)"\x83\xfa\x02", 0, false);
 
-		// Make the A button fastforward the replay again
 		this->aFnCall4.write_memory((char*)"\xe8\xa8\xca\xfa\xff", 0, false);
+		this->aFnCall5.write_memory((char*)"\xe8\x57\xee\xff\xff", 0, false);
 
-		// Restore normal controls
 		this->aJump1.write_memory((char*)"\x74\x0d", 0, false);
 		this->aJump2.write_memory((char*)"\x74\x3c", 0, false);
 		this->aCmp1.write_memory((char*)"\x81\x3d\x74\x2a\x56\x10\x10\x00\x00\x00", 0, false);
