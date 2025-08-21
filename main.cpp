@@ -191,8 +191,8 @@ main() {
 			if (DButton >= 1) {
 				if (rewindLoadCount < rewindSaveCount) {
 					rewindLoadCount += 1;
-					int buf = abs((rewindIndex - 1) % 600);
-					rewindIndex = buf;
+					rewindIndex = (rewindIndex - 1) % 600;
+					if (rewindIndex == -1) rewindIndex = 599;
 				}
 
 				loadRewind(&game_state, &rewindPool[rewindIndex]);
