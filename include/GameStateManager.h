@@ -15,22 +15,25 @@ public:
 	MemoryBlock aEXFlashTimer       = MemoryBlock(0x162A48, 1);
 
 	// NOPing these three function calls effectively pauses the game, replay
-	// iterators, input interpreter, etc. It's not a pretty solution, but it's
-	// simple enough for me to prefer it over other methods of pausing.
+	// iterators, input interpreter, etc.
 	//
-	// This place in the binary calls the function at 4745e0
+	// This place in the binary calls the function at 4745e0. NOPing it pauses
+	// the timer, KO checks, etc.
 	MemoryBlock aFnCall1            = MemoryBlock(0x02373D, 5);
-	// This place in the binary calls the function at 46db40
+	// This place in the binary calls the function at 46db40. NOPing it pauses
+	// everything related to input, both from controllers and replay file. It
+	// also stops the input interpreter.
 	MemoryBlock aFnCall2            = MemoryBlock(0x023742, 5);
-	// This place in the binary calls the function at 453b80
-	MemoryBlock aFnCall3            = MemoryBlock(0x0237B1, 5);
+	// This place in the binary calls the function at 4618c0. NOPing it freezes
+	// all effects and specials in place.
+	MemoryBlock aFnCall3            = MemoryBlock(0x053EC9, 5);
 
 	// This place in the binary calls the function at 41f5a0. NOPing it
 	// prevents the A button from fastforwarding the replay.
 	MemoryBlock aFnCall4            = MemoryBlock(0x072AF3, 5);
 
 	// This place in the binary calls the function at 4737b0. NOPing it makes
-	// the inputs not be ignored after KO.
+	// the inputs not be ignored after KO. Useful during takeover.
 	MemoryBlock aFnCall5            = MemoryBlock(0x074954, 5);
 
 	// Manipulating this address the right way makes the game ignore any inputs
@@ -91,7 +94,7 @@ public:
 		// Actually nevermind un-NOP it please thank you very much
 		this->aFnCall1.write_memory((char*)"\xe8\x9e\x0e\x05\x00", 0, false);
 		this->aFnCall2.write_memory((char*)"\xe8\xf9\xa3\x04\x00", 0, false);
-		this->aFnCall3.write_memory((char*)"\xe8\xca\x03\x03\x00", 0, false);
+		this->aFnCall3.write_memory((char*)"\xe8\xf2\xd9\x00\x00", 0, false);
 	}
 
 	void
