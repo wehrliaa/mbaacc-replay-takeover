@@ -124,6 +124,6 @@ public:
 
 		this->aJump1.write_memory((char*)"\x74\x0d", 0, false);
 		this->aJump2.write_memory((char*)"\x74\x3c", 0, false);
-		this->aCmp1.write_memory((char*)"\x81\x3d\x74\x2a\x56\x10\x10\x00\x00\x00", 0, false);
+		this->aCmp1.write_memory((char*)"\x81\x3d\x74\x2a\x56\x00\x10\x10\x00\x00", 0, false);
 	}
 };
