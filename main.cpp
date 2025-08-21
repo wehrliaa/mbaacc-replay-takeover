@@ -159,10 +159,6 @@ main() {
 
 		if ((isPaused) && ((BFrames == 1) || (CFrames == 1))) {
 
-			// Save current state before taking over.
-			save_state.save();
-			saveReplayData(&game_state, prdArray);
-
 			isTakingOver = true;
 
 			// Countdown before taking over
@@ -170,6 +166,10 @@ main() {
 				game_state.aSound1.write_memory((char*)"\x01", 0, false);
 				Sleep(500);
 			}
+
+			// Load current state before taking over, just to make sure.
+			save_state.load();
+			loadReplayData(&game_state, prdArray);
 
 			// If B and C are pressed on the same frame, P2 will be selected.
 			switch (CFrames == 1) {
