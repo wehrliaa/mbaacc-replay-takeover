@@ -19,7 +19,7 @@ The code is based on my [partial rewrite of kosunan's training tool](https://git
 
 ## Known issues
 
-- Combo damage seems to change after unpausing or loading a state. Maybe something to do with reverse beat?
+None!
 
 ## Building and usage
 

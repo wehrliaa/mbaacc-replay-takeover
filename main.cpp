@@ -57,7 +57,6 @@ main() {
 	// Save state-related variables
 	SaveStateManager save_state;
 	struct PlayerReplayData prdArray[6][2]; // Maximum of 6 rounds, 2 players
-	bool loadedState = false;
 
 	// Takeover-related variables
 	bool isTakingOver = false;
@@ -137,20 +136,12 @@ main() {
 				isPaused = !isPaused;
 
 				if (isPaused) {
-					game_state.aEXFlashTimer.read_memory(false);
+					save_state.save(&game_state);
+					saveReplayData(&game_state, prdArray);
 					game_state.pause();
 				} else {
-					// Very ugly way to prevent desyncs when unpausing during
-					// EX flash
-					if (loadedState) {
-						char buf[4];
-						memcpy(&buf, &save_state.EXFlashTimer, 4);
-						game_state.aEXFlashTimer.write_memory(buf, 0, false);
-						loadedState = false;
-					} else {
-						game_state.aEXFlashTimer.write_memory(NULL, 0, false);
-					}
-
+					save_state.load();
+					loadReplayData(&game_state, prdArray);
 					game_state.play();
 				}
 			} else {
@@ -158,12 +149,11 @@ main() {
 				isTakingOver = false;
 				game_state.untakeover();
 
-				isPaused = true;
-				game_state.pause();
-
-				loadedState = true;
 				save_state.load();
 				loadReplayData(&game_state, prdArray);
+
+				isPaused = true;
+				game_state.pause();
 			}
 		}
 
