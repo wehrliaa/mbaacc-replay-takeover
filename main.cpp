@@ -136,7 +136,7 @@ main() {
 				isPaused = !isPaused;
 
 				if (isPaused) {
-					save_state.save(&game_state);
+					save_state.save();
 					saveReplayData(&game_state, prdArray);
 					game_state.pause();
 				} else {
@@ -160,7 +160,7 @@ main() {
 		if ((isPaused) && ((BFrames == 1) || (CFrames == 1))) {
 
 			// Save current state before taking over.
-			save_state.save(&game_state);
+			save_state.save();
 			saveReplayData(&game_state, prdArray);
 
 			isTakingOver = true;

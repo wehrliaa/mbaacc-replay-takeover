@@ -25,8 +25,6 @@ class SaveStateManager {
 	std::vector<MemoryBlock> mem_pairs_list;
 
 public:
-	int EXFlashTimer = 0;
-
 	// Feio pra caralho, eu sei
 	SaveStateManager() {
 		mem_pairs_list.push_back(this->aObjects);
@@ -35,20 +33,21 @@ public:
 		mem_pairs_list.push_back(this->aDamage2);
 		mem_pairs_list.push_back(this->aShiftControlFlag1);
 		mem_pairs_list.push_back(this->aShiftControlFlag2);
+		mem_pairs_list.push_back(this->aEXFlashTimer);
 		mem_pairs_list.push_back(this->aCharacterObj1);
 		mem_pairs_list.push_back(this->aCharacterObj2);
 		mem_pairs_list.push_back(this->aCharacterObj3);
 		mem_pairs_list.push_back(this->aCharacterObj4);
 		mem_pairs_list.push_back(this->aRoundTimer);
 		mem_pairs_list.push_back(this->aSomeKONumber);
+		mem_pairs_list.push_back(this->aRngState1);
+		mem_pairs_list.push_back(this->aRngState2);
 	}
 
 	void
-	save(GameStateManager* gsm) {
+	save() {
 		for (MemoryBlock i : this->mem_pairs_list)
 			i.read_memory(false);
-
-		this->EXFlashTimer = gsm->aEXFlashTimer.int_data;
 	}
 	
 	void
