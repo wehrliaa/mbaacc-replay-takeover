@@ -43,7 +43,7 @@ You should get an executable called `takeover.exe`. Run it alongside the game in
 
 ## Acknowledgements
 
-- [Meepster99](https://github.com/Meepster99/), for helping me with the Ghidra stuff.
+- [Meepster99](https://github.com/Meepster99/), for providing me with her Ghidra project for this game. This would've taken a lot longer to make if it wasn't for that, so thanks a lot!
 
 ## License
 
