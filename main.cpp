@@ -65,8 +65,8 @@ main() {
 
 	printf("\n\033[92mFN1\033[m    = Pauses and unpauses the replay, and while taking over,\n");
 	printf("         goes back to where you last paused.\n\n");
-	printf("\033[92mB or C\033[m = With the game paused, takes over Player 1's or Player\n");
-	printf("         2's actions respectively, after a little countdown.\n\n");
+	printf("\033[92mB or C\033[m = With the game paused, takes over P1's or P2's actions\n");
+	printf("         respectively, after a little countdown.\n\n");
 	printf("\033[92mD\033[m      = Rewinds the replay for a maximum of 20 seconds (to\n");
 	printf("         save memory).\n\n");
 	printf("rewindPool is using ~%dMB of memory.\n", sizeof(struct RewindState[600]) / (1024 * 1024));
