@@ -14,6 +14,7 @@
 #include <math.h>
 #include <memory>
 #include <psapi.h>
+#include <sstream>
 #include <thread>
 #include <vector>
 
@@ -24,3 +25,4 @@
 #include "SaveStateManager.h"
 #include "PlayerReplayData.h"
 #include "RewindSystem.h"
+#include "Ui.h"

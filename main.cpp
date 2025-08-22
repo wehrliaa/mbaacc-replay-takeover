@@ -63,6 +63,10 @@ main() {
 	// Process stuff
 	DWORD exitCode = 0;
 
+	// UI variables
+	std::string P1Text = "\0";
+	std::string P2Text = "\0";
+
 	printf("\n\033[92mFN1\033[m    = Pauses and unpauses the replay, and while taking over,\n");
 	printf("         goes back to where you last paused.\n\n");
 	printf("\033[92mB or C\033[m = With the game paused, takes over P1's or P2's actions\n");
@@ -70,6 +74,9 @@ main() {
 	printf("\033[92mD\033[m      = Rewinds the replay for a maximum of 20 seconds (to\n");
 	printf("         save memory).\n\n");
 	printf("rewindPool is using ~%dMB of memory.\n", sizeof(struct RewindState[600]) / (1024 * 1024));
+
+	prepareChallengerText();
+	changeChallengerText(P1Text.c_str(), P2Text.c_str());
 
 	while (1) {
 		// Close if game has been closed.
@@ -90,6 +97,9 @@ main() {
 			rewindIndex = 0;
 			rewindSaveCount = 0;
 			rewindLoadCount = 0;
+
+			P1Text = "\0";
+			P2Text = "\0";
 		}
 
 		// Everything below this chunk of code is synced with the game's
@@ -136,16 +146,25 @@ main() {
 				isPaused = !isPaused;
 
 				if (isPaused) {
+					P1Text = "PAUSED\0";
+					P2Text = "\0";
+
 					save_state.save();
 					saveReplayData(&game_state, prdArray);
 					game_state.pause();
 				} else {
+					P1Text = "PLAYING\0";
+					P2Text = "\0";
+
 					save_state.load();
 					loadReplayData(&game_state, prdArray);
 					game_state.play();
 				}
 			} else {
 				// stop taking over, pause, and load state
+				P1Text = "PAUSED\0";
+				P2Text = "\0";
+
 				isTakingOver = false;
 				game_state.untakeover();
 
@@ -161,12 +180,24 @@ main() {
 
 			isTakingOver = true;
 
+			P1Text = "TAKING OVER\0";
+			std::stringstream ss;
+
 			// Countdown before taking over
-			for (int i = 0; i < 3; i++) {
+			for (int i = 3; i >= 1; i--) {
 				game_state.aSound1.write_memory((char*)"\x01", 0, false);
+
+				ss.str("");
+				ss << "PLAYER " << (CFrames == 1) + 1 << " IN " << i << "\0";
+				P2Text = ss.str();
+				changeChallengerText(P1Text.c_str(), P2Text.c_str());
+
 				Sleep(500);
 			}
 
+			ss.str("");
+			ss << "PLAYER " << (CFrames == 1) + 1 << "\0";
+			P2Text = ss.str();
 			// Load current state before taking over, just to make sure.
 			save_state.load();
 			loadReplayData(&game_state, prdArray);
@@ -195,10 +226,14 @@ main() {
 					if (rewindIndex == -1) rewindIndex = 599;
 				}
 
+				P1Text = "REWINDING\0";
+				P2Text = "\0";
 				loadRewind(&game_state, &rewindPool[rewindIndex]);
 			} else {
 				// Save every other frame to use twice less memory. And also
 				// to rewind twice as fast.
+				P1Text = "PLAYING\0";
+				P2Text = "\0";
 				if (global_frame_count % 2 == 0) {
 					if (rewindSaveCount < 600) rewindSaveCount += 1;
 					saveRewind(&game_state, &rewindPool[rewindIndex]);
@@ -208,6 +243,8 @@ main() {
 				rewindLoadCount = 0;
 			}
 		}
+
+		changeChallengerText(P1Text.c_str(), P2Text.c_str());
 	}
 
 	signal_handler(0);
