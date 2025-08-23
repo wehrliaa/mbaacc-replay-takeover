@@ -34,10 +34,14 @@ main() {
 	// Input-related variables
 	int BButton;
 	int BFrames;
+
 	int CButton;
 	int CFrames;
+
 	int DButton;
 	int DFrames;
+	int DLastFrame;
+
 	int FN1Button;
 	int FN1Frames;
 
@@ -56,9 +60,10 @@ main() {
 
 	// Rewind-related variables
 	struct RewindState* rewindPool = new struct RewindState [600];
-	int rewindIndex = 0;
-	int rewindSaveCount = 0;
-	int rewindLoadCount = 0;
+	int rewindReadIndex = 0;
+	int rewindWriteIndex = 0;
+	int rewindReadCount = 0;
+	int rewindWriteCount = 0;
 
 	// Process stuff
 	DWORD exitCode = 0;
@@ -94,9 +99,8 @@ main() {
 			isTakingOver = false;
 			game_state.untakeover();
 
-			rewindIndex = 0;
-			rewindSaveCount = 0;
-			rewindLoadCount = 0;
+			rewindReadCount = 0;
+			rewindWriteCount = 0;
 
 			P1Text = "\0";
 			P2Text = "\0";
@@ -198,6 +202,7 @@ main() {
 			ss.str("");
 			ss << "PLAYER " << (CFrames == 1) + 1 << "\0";
 			P2Text = ss.str();
+
 			// Load current state before taking over, just to make sure.
 			save_state.load();
 			loadReplayData(&game_state, prdArray);
@@ -218,30 +223,44 @@ main() {
 		}
 
 		// Replay rewind
+		// This is basically a circular buffer that is read backwards from the
+		// latest write location.
 		if ((!isTakingOver) && (!isPaused)) {
 			if (DButton >= 1) {
-				if (rewindLoadCount < rewindSaveCount) {
-					rewindLoadCount += 1;
-					rewindIndex = (rewindIndex - 1) % 600;
-					if (rewindIndex == -1) rewindIndex = 599;
+				// Reading from the buffer
+				if (rewindReadCount < rewindWriteCount) {
+					rewindReadIndex = (rewindReadIndex - 1 + 600) % 600;
+					rewindReadCount += 1;
 				}
 
 				P1Text = "REWINDING\0";
 				P2Text = "\0";
-				loadRewind(&game_state, &rewindPool[rewindIndex]);
+				//printf("reading - rindex=%d, windex=%d, rcount=%d, wcount=%d\n", rewindReadIndex, rewindWriteIndex, rewindReadCount, rewindWriteCount);
+				loadRewind(&game_state, &rewindPool[rewindReadIndex]);
+
 			} else {
-				// Save every other frame to use twice less memory. And also
-				// to rewind twice as fast.
+				// Writing to the buffer
+				if (DLastFrame >= 1)
+					rewindWriteCount -= rewindReadCount;
+
 				P1Text = "PLAYING\0";
 				P2Text = "\0";
+
 				if (global_frame_count % 2 == 0) {
-					if (rewindSaveCount < 600) rewindSaveCount += 1;
-					saveRewind(&game_state, &rewindPool[rewindIndex]);
-					rewindIndex = (rewindIndex + 1) % 600;
+					if (rewindReadIndex == rewindWriteIndex) {
+						//printf("writing - rindex=%d, windex=%d, rcount=%d, wcount=%d\n", rewindReadIndex, rewindWriteIndex, rewindReadCount, rewindWriteCount);
+						saveRewind(&game_state, &rewindPool[rewindWriteIndex]);
+						rewindWriteIndex = (rewindWriteIndex + 1) % 600;
+					}
+
+					rewindReadIndex = (rewindReadIndex + 1) % 600;
+					if (rewindWriteCount < 600) rewindWriteCount += 1;
 				}
 
-				rewindLoadCount = 0;
+				rewindReadCount = 0;
 			}
+
+			DLastFrame = DButton;
 		}
 
 		changeChallengerText(P1Text.c_str(), P2Text.c_str());
