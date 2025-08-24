@@ -29,6 +29,10 @@ main() {
 	SetConsoleCursorInfo(han, &cursorInfo);
 
 	system("cls");
+
+	printf("Please open the game in \033[92mReplay Mode\033[m. In CCCaster v3.1, Go to:\n\n"
+	       "Main menu -> [4] Offline -> [5] Replay\n\n");
+
  	gProc = wait_process("MBAA.exe");
 	
 	// Input-related variables
@@ -72,7 +76,8 @@ main() {
 	std::string P1Text = "\0";
 	std::string P2Text = "\0";
 
-	printf("\n\033[92mFN1\033[m    = Pauses and unpauses the replay, and while taking over,\n");
+	system("cls");
+	printf("\033[92mFN1\033[m    = Pauses and unpauses the replay, and while taking over,\n");
 	printf("         goes back to where you last paused.\n\n");
 	printf("\033[92mB or C\033[m = With the game paused, takes over P1's or P2's actions\n");
 	printf("         respectively, after a little countdown.\n\n");
