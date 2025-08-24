@@ -101,6 +101,7 @@ main() {
 
 			rewindReadCount = 0;
 			rewindWriteCount = 0;
+			rewindWriteIndex = rewindReadIndex;
 
 			P1Text = "\0";
 			P2Text = "\0";
