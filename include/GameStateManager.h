@@ -85,8 +85,6 @@ public:
 		this->aFnCall1.write_memory((char*)"\x90\x90\x90\x90\x90", 0, false);
 		this->aFnCall2.write_memory((char*)"\x90\x90\x90\x90\x90", 0, false);
 		this->aFnCall3.write_memory((char*)"\x90\x90\x90\x90\x90", 0, false);
-
-		this->aEXFlashTimer.read_memory(false);
 	}
 
 	void

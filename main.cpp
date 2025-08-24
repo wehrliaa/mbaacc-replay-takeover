@@ -94,7 +94,7 @@ main() {
 		// Reset stuff at the start of each round
 		if (global_frame_count == 0) {
 			isPaused = false;
-			game_state.play();
+			//game_state.play();
 
 			isTakingOver = false;
 			game_state.untakeover();
@@ -156,14 +156,14 @@ main() {
 
 					save_state.save();
 					saveReplayData(&game_state, prdArray);
-					game_state.pause();
+					//game_state.pause();
 				} else {
 					P1Text = "PLAYING\0";
 					P2Text = "\0";
 
 					save_state.load();
 					loadReplayData(&game_state, prdArray);
-					game_state.play();
+					//game_state.play();
 				}
 			} else {
 				// stop taking over, pause, and load state
@@ -177,10 +177,15 @@ main() {
 				loadReplayData(&game_state, prdArray);
 
 				isPaused = true;
-				game_state.pause();
+				//game_state.pause();
 			}
 		}
 
+		if (isPaused) {
+			game_state.aEXFlashTimer.write_memory((char*)"\xff", 0, false);
+		}
+
+		// Replay takeover
 		if ((isPaused) && ((BFrames == 1) || (CFrames == 1))) {
 
 			isTakingOver = true;
@@ -213,12 +218,12 @@ main() {
 				case 0:
 					isPaused = false;
 					game_state.takeoverP1();
-					game_state.play();
+					//game_state.play();
 					break;
 				case 1:
 					isPaused = false;
 					game_state.takeoverP2();
-					game_state.play();
+					//game_state.play();
 					break;
 			}
 		}
