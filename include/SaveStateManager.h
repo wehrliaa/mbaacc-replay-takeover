@@ -6,6 +6,9 @@ class SaveStateManager {
 	// 1Pデータの開始位置を定義
 	DWORD DAT_P1_AD = 0x155140;     // 971 bytes
 
+	MemoryBlock aCam1XY            = MemoryBlock(0x164B14, 8);
+	MemoryBlock aCam2XY            = MemoryBlock(0x15DEC4, 8);
+	MemoryBlock aCamZoom           = MemoryBlock(0x14EB70, 12);
 	MemoryBlock aObjects           = MemoryBlock(0x27BD70, 74576);
 	MemoryBlock aStoppageStatus    = MemoryBlock(0x158600, 1632);
 	MemoryBlock aDamage            = MemoryBlock(0x157DD8, 52);
@@ -27,6 +30,9 @@ class SaveStateManager {
 public:
 	// Feio pra caralho, eu sei
 	SaveStateManager() {
+		mem_pairs_list.push_back(this->aCam1XY);
+		mem_pairs_list.push_back(this->aCam2XY);
+		mem_pairs_list.push_back(this->aCamZoom);
 		mem_pairs_list.push_back(this->aObjects);
 		mem_pairs_list.push_back(this->aStoppageStatus);
 		mem_pairs_list.push_back(this->aDamage);
