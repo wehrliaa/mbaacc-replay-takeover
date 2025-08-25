@@ -20,7 +20,6 @@ The code is based on my [partial rewrite of kosunan's training tool](https://git
 ## Known issues
 
 - pause > takeover 1 > kill > spend time in limbo > load > takeover 2 > kill > spend time in limbo > load > desyncs the combo counter
-- rewinding, unrewinding, and rewinding again till the beginning of the round crashes the game
 
 ## Building and usage
 
