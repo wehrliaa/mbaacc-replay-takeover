@@ -68,6 +68,7 @@ main() {
 	int rewindWriteIndex = 0;
 	int rewindReadCount = 0;
 	int rewindWriteCount = 0;
+	bool isRewinding = false;
 
 	// Process stuff
 	DWORD exitCode = 0;
@@ -156,25 +157,16 @@ main() {
 				isPaused = !isPaused;
 
 				if (isPaused) {
-					P1Text = "PAUSED\0";
-					P2Text = "\0";
-
 					save_state.save();
 					saveReplayData(&game_state, prdArray);
 					//game_state.pause();
 				} else {
-					P1Text = "PLAYING\0";
-					P2Text = "\0";
-
 					save_state.load();
 					loadReplayData(&game_state, prdArray);
 					//game_state.play();
 				}
 			} else {
 				// stop taking over, pause, and load state
-				P1Text = "PAUSED\0";
-				P2Text = "\0";
-
 				isTakingOver = false;
 				game_state.untakeover();
 
@@ -186,8 +178,14 @@ main() {
 			}
 		}
 
-		if (isPaused) {
+		if ((isPaused) && (!isRewinding)) {
 			game_state.aEXFlashTimer.write_memory((char*)"\xff", 0, false);
+
+			P1Text = "PAUSED\0";
+			P2Text = "\0";
+		} else if (!isTakingOver) {
+			P1Text = "PLAYING\0";
+			P2Text = "\0";
 		}
 
 		// Replay takeover
@@ -236,8 +234,10 @@ main() {
 		// Replay rewind
 		// This is basically a circular buffer that is read backwards from the
 		// latest write location.
-		if ((!isTakingOver) && (!isPaused)) {
+		if (!isTakingOver) {
 			if (DButton >= 1) {
+				isRewinding = true;
+
 				// Reading from the buffer
 				if (rewindReadCount < rewindWriteCount) {
 					rewindReadIndex = (rewindReadIndex - 1 + 600) % 600;
@@ -251,13 +251,15 @@ main() {
 
 			} else {
 				// Writing to the buffer
-				if (DLastFrame >= 1)
+				isRewinding = false;
+
+				if (DLastFrame >= 1) {
 					rewindWriteCount -= rewindReadCount;
+					save_state.save();
+					saveReplayData(&game_state, prdArray);
+				}
 
-				P1Text = "PLAYING\0";
-				P2Text = "\0";
-
-				if (global_frame_count % 2 == 0) {
+				if ((global_frame_count % 2 == 0) && (!isPaused)) {
 					if (rewindReadIndex == rewindWriteIndex) {
 						//printf("writing - rindex=%d, windex=%d, rcount=%d, wcount=%d\n", rewindReadIndex, rewindWriteIndex, rewindReadCount, rewindWriteCount);
 						saveRewind(&game_state, &rewindPool[rewindWriteIndex]);
