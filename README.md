@@ -19,7 +19,7 @@ The code is based on my [partial rewrite of kosunan's training tool](https://git
 
 ## Known issues
 
-- pause > takeover 1 > kill > spend time in limbo > load > takeover 2 > kill > spend time in limbo > load > desyncs the combo counter
+None.
 
 ## Building and usage
 
