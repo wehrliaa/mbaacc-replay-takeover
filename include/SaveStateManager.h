@@ -24,6 +24,7 @@ class SaveStateManager {
 	MemoryBlock aSomeKONumber      = MemoryBlock(0x162A6F, 1);
 	MemoryBlock aRngState1         = MemoryBlock(0x163778, 8);
 	MemoryBlock aRngState2         = MemoryBlock(0x164068, 225);
+	MemoryBlock aSlowdownTimer     = MemoryBlock(0x15D208, 2);
 
 	std::vector<MemoryBlock> mem_pairs_list;
 
@@ -48,6 +49,7 @@ public:
 		mem_pairs_list.push_back(this->aSomeKONumber);
 		mem_pairs_list.push_back(this->aRngState1);
 		mem_pairs_list.push_back(this->aRngState2);
+		mem_pairs_list.push_back(this->aSlowdownTimer);
 	}
 
 	void

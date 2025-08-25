@@ -15,6 +15,7 @@ struct RewindState {
 	char aSomeKONumber[1];
 	char aRngState1[8]; // Two numbers merged for the same purpose
 	char aRngState2[225];
+	char aSlowdownTimer[2];
 
 	struct PlayerReplayData prd[6][2];
 };
@@ -32,6 +33,7 @@ saveRewind(GameStateManager* gsm, struct RewindState* rs) {
 	ReadProcessMemory(gProc.handle, (LPVOID)(gProc.baddr + 0x162A6F), rs->aSomeKONumber, 1, NULL);
 	ReadProcessMemory(gProc.handle, (LPVOID)(gProc.baddr + 0x163778), rs->aRngState1, 8, NULL);
 	ReadProcessMemory(gProc.handle, (LPVOID)(gProc.baddr + 0x164068), rs->aRngState2, 225, NULL);
+	ReadProcessMemory(gProc.handle, (LPVOID)(gProc.baddr + 0x15D208), rs->aSlowdownTimer, 2, NULL);
 	
 	saveReplayData(gsm, rs->prd);
 }
@@ -49,6 +51,7 @@ loadRewind(GameStateManager* gsm, struct RewindState* rs) {
 	WriteProcessMemory(gProc.handle, (LPVOID)(gProc.baddr + 0x162A6F), rs->aSomeKONumber, 1, NULL);
 	WriteProcessMemory(gProc.handle, (LPVOID)(gProc.baddr + 0x163778), rs->aRngState1, 8, NULL);
 	WriteProcessMemory(gProc.handle, (LPVOID)(gProc.baddr + 0x164068), rs->aRngState2, 225, NULL);
+	WriteProcessMemory(gProc.handle, (LPVOID)(gProc.baddr + 0x15D208), rs->aSlowdownTimer, 2, NULL);
 
 	loadReplayData(gsm, rs->prd);
 }
