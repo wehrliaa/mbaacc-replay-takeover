@@ -78,13 +78,18 @@ main() {
 	std::string P2Text = "\0";
 
 	system("cls");
-	printf("\033[92mFN1\033[m    = Pauses and unpauses the replay, and while taking over,\n");
-	printf("         goes back to where you last paused.\n\n");
-	printf("\033[92mB or C\033[m = With the game paused, takes over P1's or P2's actions\n");
-	printf("         respectively, after a little countdown.\n\n");
-	printf("\033[92mD\033[m      = Rewinds the replay for a maximum of 20 seconds (to\n");
-	printf("         save memory).\n\n");
-	printf("rewindPool is using ~%dMB of memory.\n", sizeof(struct RewindState[600]) / (1024 * 1024));
+	printf(
+		"                   MBAACC Replay Takeover\n\n"
+		"\033[92mFN1\033[m    = Pauses and unpauses the replay, and while taking over,\n"
+		"         goes back to where you last paused.\n\n"
+		"\033[92mB or C\033[m = With the replay paused, takes over P1's or P2's actions\n"
+		"         respectively, after a little countdown.\n\n"
+		"\033[92mD\033[m      = Rewinds the replay for a maximum of 20 seconds (to\n"
+		"         save memory). Reset the round if you need to go back\n"
+		"         further.\n\n"
+		"rewindPool is using ~%dMB of memory.\n",
+		sizeof(struct RewindState[600]) / (1024 * 1024)
+	);
 
 	prepareChallengerText();
 	changeChallengerText(P1Text.c_str(), P2Text.c_str());
