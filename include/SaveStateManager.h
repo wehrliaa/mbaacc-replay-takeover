@@ -1,4 +1,5 @@
 // SaveStateManager.h: Savestate-related code
+#pragma once
 
 class SaveStateManager {
 	// キャラクター構造体のサイズを定義
@@ -25,6 +26,8 @@ class SaveStateManager {
 	MemoryBlock aRngState1         = MemoryBlock(0x163778, 8);
 	MemoryBlock aRngState2         = MemoryBlock(0x164068, 225);
 	MemoryBlock aSlowdownTimer     = MemoryBlock(0x15D208, 2);
+
+	struct PlayerReplayData prd[6][2]; // Maximum of 6 rounds, 2 players
 
 	std::vector<MemoryBlock> mem_pairs_list;
 
@@ -53,15 +56,22 @@ public:
 	}
 
 	void
-	save() {
+	save(GameStateManager* gsm) {
+		// Save gamestate
 		for (MemoryBlock i : this->mem_pairs_list)
 			i.read_memory(false);
+
+		// Save replay readers(?)
+		saveReplayData(gsm, this->prd);
 	}
 	
 	void
-	load() {
+	load(GameStateManager* gsm) {
+		// Load gamestate
 		for (MemoryBlock i : this->mem_pairs_list)
 			i.write_memory(NULL, 0, false);
-	}
 
+		// Load replay readers(?)
+		loadReplayData(gsm, this->prd);
+	}
 };

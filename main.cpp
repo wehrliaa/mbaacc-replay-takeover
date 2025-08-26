@@ -59,7 +59,6 @@ start:
 
 	// Save state-related variables
 	SaveStateManager save_state;
-	struct PlayerReplayData prdArray[6][2]; // Maximum of 6 rounds, 2 players
 
 	// Takeover-related variables
 	bool isTakingOver = false;
@@ -166,15 +165,13 @@ start:
 					P1Text = "PAUSED\0";
 					P2Text = "\0";
 
-					save_state.save();
-					saveReplayData(&game_state, prdArray);
+					save_state.save(&game_state);
 					//game_state.pause();
 				} else {
 					P1Text = "PLAYING\0";
 					P2Text = "\0";
 
-					save_state.load();
-					loadReplayData(&game_state, prdArray);
+					save_state.load(&game_state);
 					//game_state.play();
 				}
 			} else {
@@ -185,8 +182,7 @@ start:
 				isTakingOver = false;
 				game_state.untakeover();
 
-				save_state.load();
-				loadReplayData(&game_state, prdArray);
+				save_state.load(&game_state);
 
 				isPaused = true;
 				//game_state.pause();
@@ -222,8 +218,7 @@ start:
 			P2Text = ss.str();
 
 			// Load current state before taking over, just to make sure.
-			save_state.load();
-			loadReplayData(&game_state, prdArray);
+			save_state.load(&game_state);
 
 			// If B and C are pressed on the same frame, P2 will be selected.
 			switch (CFrames == 1) {

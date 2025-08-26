@@ -22,7 +22,7 @@
 #include "MemoryBlock.h"
 #include "cli.h"
 #include "GameStateManager.h"
-#include "SaveStateManager.h"
 #include "PlayerReplayData.h"
+#include "SaveStateManager.h"
 #include "RewindSystem.h"
 #include "Ui.h"
