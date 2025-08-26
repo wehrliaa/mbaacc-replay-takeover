@@ -4,10 +4,6 @@ This is a very simple implementation of replay takeover for Melty Blood Actress 
 
 The code is based on my [partial rewrite of kosunan's training tool](https://github.com/wehrliaa/mbaacc-training-linux).
 
-## Note for Linux users!!!!
-
-**Due to a limitation in (or feature of) Wine, this tool and the game need to be run in the same Wine prefix**, otherwise it won't detect the game at all. So if you're running the game through Lutris, Proton, Steam, etc, you might have to tweak some stuff to make it work.
-
 ## Goals
 
 - [X] Pause the game indefinitely
@@ -33,7 +29,11 @@ make
 
 You should get an executable called `takeover.exe`. Run it alongside the game in replay mode (Offline > Replay, in CCCaster 3.1).
 
-**Linux users**: Run it from your terminal with Wine, Proton, whatever you use.
+### Linux
+
+You should be able to run it by just clicking on it, but if that doesn't work, copy the `takeover.sh` script in the repo over to the same directory as `takeover.exe`, and then run the script.
+
+Due to a limitation in (or feature of) Wine, **this tool and the game need to be run in the same Wine prefix**, otherwise it won't detect the game at all. So if you're running the game through stuff like Lutris or Steam, you might have to tweak some stuff to make it work properly. Consider modifying the `takeover.sh` script as well.
 
 ## Controls
 
