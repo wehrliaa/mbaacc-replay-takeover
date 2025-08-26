@@ -30,7 +30,7 @@ main() {
 
 	system("cls");
 
-	printf("Please open the game in \033[92mReplay Mode\033[m. In CCCaster v3.1, Go to:\n\n"
+	printf("Please open the game in Replay Mode. In CCCaster v3.1, Go to:\n\n"
 	       "Main menu -> [4] Offline -> [5] Replay\n\n");
 
  	gProc = wait_process("MBAA.exe");
@@ -79,11 +79,11 @@ main() {
 	system("cls");
 	printf(
 		"                   MBAACC Replay Takeover\n\n"
-		"\033[92mFN1\033[m    = Pauses and unpauses the replay, and while taking over,\n"
+		"FN1    = Pauses and unpauses the replay, and while taking over,\n"
 		"         goes back to where you last paused.\n\n"
-		"\033[92mB or C\033[m = With the replay paused, takes over P1's or P2's actions\n"
+		"B or C = With the replay paused, takes over P1's or P2's actions\n"
 		"         respectively, after a little countdown.\n\n"
-		"\033[92mD\033[m      = Rewinds the replay for a maximum of 20 seconds (to\n"
+		"D      = Rewinds the replay for a maximum of 20 seconds (to\n"
 		"         save memory). Reset the round if you need to go back\n"
 		"         further.\n\n"
 		"rewindPool is using ~%dMB of memory.\n",
