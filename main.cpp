@@ -28,6 +28,8 @@ main() {
 	cursorInfo.bVisible = false;
 	SetConsoleCursorInfo(han, &cursorInfo);
 
+start:
+
 	system("cls");
 
 	printf("Please open the game in Replay Mode. In CCCaster v3.1, Go to:\n\n"
@@ -94,9 +96,9 @@ main() {
 	changeChallengerText(P1Text.c_str(), P2Text.c_str());
 
 	while (1) {
-		// Close if game has been closed.
+		// Restart if game has been closed.
 		GetExitCodeProcess(gProc.handle, &exitCode);
-		if (gProc.handle == 0x0 || exitCode != 259) break;
+		if (gProc.handle == 0x0 || exitCode != 259) goto start;
 
 		game_state.fetch_game_data();
 		global_frame_count = game_state.aTimer.int_data;
