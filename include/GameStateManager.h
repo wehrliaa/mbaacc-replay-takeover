@@ -13,6 +13,8 @@ public:
 	MemoryBlock aDKey               = MemoryBlock(0x37139C, 1);
 	MemoryBlock aGameMode           = MemoryBlock(0x14EEE8, 2);
 	MemoryBlock aEXFlashTimer       = MemoryBlock(0x162A48, 1);
+	MemoryBlock aIntroState         = MemoryBlock(0x15D20B, 1);
+	MemoryBlock aOutroState         = MemoryBlock(0x162A6F, 1);
 
 	// NOPing these three function calls effectively pauses the game, replay
 	// iterators, input interpreter, etc.
@@ -77,6 +79,8 @@ public:
 		this->aDKey.read_memory(false);
 		this->aGameMode.read_memory(false);
 		this->aTimer.read_memory(false);
+		this->aIntroState.read_memory(false);
+		this->aOutroState.read_memory(false);
 	}
 
 	void

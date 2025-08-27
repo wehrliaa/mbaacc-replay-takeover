@@ -38,18 +38,18 @@ start:
  	gProc = wait_process("MBAA.exe");
 	
 	// Input-related variables
-	int BButton;
-	int BFrames;
+	int BButton = 0;
+	int BFrames = 0;
 
-	int CButton;
-	int CFrames;
+	int CButton = 0;
+	int CFrames = 0;
 
-	int DButton;
-	int DFrames;
-	int DLastFrame;
+	int DButton = 0;
+	int DFrames = 0;
+	int DLastFrame = 0;
 
-	int FN1Button;
-	int FN1Frames;
+	int FN1Button = 0;
+	int FN1Frames = 0;
 
 	// Game state-related variables
 	GameStateManager game_state;
@@ -130,29 +130,38 @@ start:
 
 		// Handle inputs FIRST //
 
-		// FN1
-		FN1Button = game_state.aFN1Key.int_data;
-		if (FN1Button >= 1) {
-			FN1Frames += 1;
-		} else FN1Frames = 0;
+		// Only read inputs after intro state 1, and before the winning
+		// character's winpose.
+		if (
+			(
+				(game_state.aOutroState.int_data == 0) ||
+				(game_state.aOutroState.int_data == 199)
+			) && (game_state.aIntroState.int_data == 0)
+		) {
+			// FN1
+			FN1Button = game_state.aFN1Key.int_data;
+			if (FN1Button >= 1) {
+				FN1Frames += 1;
+			} else FN1Frames = 0;
 
-		// B
-		BButton = game_state.aBKey.int_data;
-		if (BButton >= 1) {
-			BFrames += 1;
-		} else BFrames = 0;
+			// B
+			BButton = game_state.aBKey.int_data;
+			if (BButton >= 1) {
+				BFrames += 1;
+			} else BFrames = 0;
 
-		// C
-		CButton = game_state.aCKey.int_data;
-		if (CButton >= 1) {
-			CFrames += 1;
-		} else CFrames = 0;
+			// C
+			CButton = game_state.aCKey.int_data;
+			if (CButton >= 1) {
+				CFrames += 1;
+			} else CFrames = 0;
 
-		// D
-		DButton = game_state.aDKey.int_data;
-		if (DButton >= 1) {
-			DFrames += 1;
-		} else DFrames = 0;
+			// D
+			DButton = game_state.aDKey.int_data;
+			if (DButton >= 1) {
+				DFrames += 1;
+			} else DFrames = 0;
+		}
 
 		// Handle state SECOND //
 		// srry im dumb i need to remind myself of this //
