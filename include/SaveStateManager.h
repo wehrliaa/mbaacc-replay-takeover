@@ -24,7 +24,7 @@ class SaveStateManager {
 	MemoryBlock aRoundTimer        = MemoryBlock(0x162A3C, 4);
 	MemoryBlock aSomeKONumber      = MemoryBlock(0x162A6F, 1);
 	MemoryBlock aRngState1         = MemoryBlock(0x163778, 8);
-	MemoryBlock aRngState2         = MemoryBlock(0x164068, 225);
+	MemoryBlock aRngState2         = MemoryBlock(0x164068, 228);
 	MemoryBlock aSlowdownTimer     = MemoryBlock(0x15D208, 2);
 
 	struct PlayerReplayData prd[6][2]; // Maximum of 6 rounds, 2 players
