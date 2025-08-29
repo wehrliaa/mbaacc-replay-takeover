@@ -64,7 +64,8 @@ start:
 	bool isTakingOver = false;
 
 	// Rewind-related variables
-	struct RewindState* rewindPool = new struct RewindState [600];
+	int rewindPoolSize = 20 * (60 / 2); // 20 seconds, saving every other frame
+	struct RewindState* rewindPool = new struct RewindState [rewindPoolSize];
 	int rewindReadIndex = 0;
 	int rewindWriteIndex = 0;
 	int rewindReadCount = 0;
@@ -87,8 +88,9 @@ start:
 		"D      = Rewinds the replay for a maximum of 20 seconds (to\n"
 		"         save memory). Reset the round if you need to go back\n"
 		"         further.\n\n"
-		"rewindPool is using ~%dMB of memory.\n",
-		sizeof(struct RewindState[600]) / (1024 * 1024)
+		"rewindPool[%d] is using ~%dMB of memory.\n",
+		rewindPoolSize,
+		sizeof(struct RewindState[rewindPoolSize]) / (1024 * 1024)
 	);
 
 	prepareChallengerText();
@@ -251,7 +253,7 @@ start:
 			if (DButton >= 1) {
 				// Reading from the buffer
 				if (rewindReadCount < rewindWriteCount) {
-					rewindReadIndex = (rewindReadIndex - 1 + 600) % 600;
+					rewindReadIndex = (rewindReadIndex - 1 + rewindPoolSize) % rewindPoolSize;
 					rewindReadCount += 1;
 				}
 
@@ -272,11 +274,11 @@ start:
 					if (rewindReadIndex == rewindWriteIndex) {
 						//printf("writing - rindex=%d, windex=%d, rcount=%d, wcount=%d\n", rewindReadIndex, rewindWriteIndex, rewindReadCount, rewindWriteCount);
 						saveRewind(&game_state, &rewindPool[rewindWriteIndex]);
-						rewindWriteIndex = (rewindWriteIndex + 1) % 600;
+						rewindWriteIndex = (rewindWriteIndex + 1) % rewindPoolSize;
 					}
 
-					rewindReadIndex = (rewindReadIndex + 1) % 600;
-					if (rewindWriteCount < 600) rewindWriteCount += 1;
+					rewindReadIndex = (rewindReadIndex + 1) % rewindPoolSize;
+					if (rewindWriteCount < rewindPoolSize) rewindWriteCount += 1;
 				}
 
 				rewindReadCount = 0;
