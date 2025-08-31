@@ -15,6 +15,7 @@ public:
 	MemoryBlock aEXFlashTimer       = MemoryBlock(0x162A48, 1);
 	MemoryBlock aIntroState         = MemoryBlock(0x15D20B, 1);
 	MemoryBlock aOutroState         = MemoryBlock(0x162A6F, 1);
+	MemoryBlock aVersusCheck        = MemoryBlock(0x37BF2C, 4);
 
 	// NOPing these three function calls effectively pauses the game, replay
 	// iterators, input interpreter, etc.

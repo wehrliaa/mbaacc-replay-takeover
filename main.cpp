@@ -28,15 +28,6 @@ main() {
 	cursorInfo.bVisible = false;
 	SetConsoleCursorInfo(han, &cursorInfo);
 
-start:
-
-	system("cls");
-
-	printf("Please open the game in Replay Mode. In CCCaster v3.1, Go to:\n\n"
-	       "Main menu -> [4] Offline -> [5] Replay\n\n");
-
- 	gProc = wait_process("MBAA.exe");
-	
 	// Input-related variables
 	int BButton = 0;
 	int BFrames = 0;
@@ -78,23 +69,52 @@ start:
 	std::string P1Text = "\0";
 	std::string P2Text = "\0";
 
+start: // FUCKING LOVE GOTOS HELL YEAHHHHH
+
 	system("cls");
-	printf(
-		"                   MBAACC Replay Takeover\n\n"
-		"FN1    = Pauses and unpauses the replay, and while taking over,\n"
-		"         goes back to where you last paused.\n\n"
-		"B or C = With the replay paused, takes over P1's or P2's actions\n"
-		"         respectively, after a little countdown.\n\n"
-		"D      = Rewinds the replay for a maximum of 20 seconds (to\n"
-		"         save memory). Reset the round if you need to go back\n"
-		"         further.\n\n"
-		"rewindPool[%d] is using ~%dMB of memory.\n",
-		rewindPoolSize,
-		sizeof(struct RewindState[rewindPoolSize]) / (1024 * 1024)
-	);
+	printf("                   MBAACC Replay Takeover\n\n");
+
+	printf("Please open the game in Replay Mode. In CCCaster v3.1, Go to:\n\n"
+	       "Main menu -> [4] Offline -> [5] Replay\n\n");
+
+ 	gProc = wait_process("MBAA.exe");
+
+	// Check for replay mode. Can't put this in the main loop below because
+	// any printf calls lag the whole thing. Maybe I could multithread this
+	// actually... Ehhhh who cares anyway, this works. Ugly but works.
+	//
+	// Actually putting it in the main loop is unnecessary, since once replay
+	// gets detected, it's not gonna go back to non-replay mode. Unless if
+	// you're running the game from the base exe... You aren't doing that, are
+	// you?
+	while (game_state.aVersusCheck.read_memory(false) != 2) {
+		printf("\rReplay mode wasn't detected!");
+
+		GetExitCodeProcess(gProc.handle, &exitCode);
+		if (gProc.handle == 0x0 || exitCode != 259) goto start;
+
+		Sleep(500);
+	}
 
 	prepareChallengerText();
 	changeChallengerText(P1Text.c_str(), P2Text.c_str());
+
+	set_cursor_pos(0, 2);
+	printf(
+		"FN1    = Pauses and unpauses the replay, and while taking over,\n"
+		"         goes back to where you last paused.\n"
+		"                                                                  \n"
+		"B or C = With the replay paused, takes over P1's or P2's actions\n"
+		"         respectively, after a little countdown.\n"
+		"                                                                  \n"
+		"D      = Rewinds the replay for a maximum of 20 seconds (to\n"
+		"         save memory). Reset the round if you need to go back\n"
+		"         further.\n"
+		"                                                                  \n"
+		"rewindPool[%d] is using ~%dMB of memory.\n\n",
+		rewindPoolSize,
+		sizeof(struct RewindState[rewindPoolSize]) / (1024 * 1024)
+	);
 
 	while (1) {
 		// Restart if game has been closed.
@@ -135,10 +155,8 @@ start:
 		// Only read inputs after intro state 1, and before the winning
 		// character's winpose.
 		if (
-			(
-				(game_state.aOutroState.int_data == 0) ||
-				(game_state.aOutroState.int_data == 199)
-			) && (game_state.aIntroState.int_data == 0)
+			((game_state.aOutroState.int_data == 0) || (game_state.aOutroState.int_data == 199)) &&
+			(game_state.aIntroState.int_data == 0)
 		) {
 			// FN1
 			FN1Button = game_state.aFN1Key.int_data;

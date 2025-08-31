@@ -29,3 +29,14 @@ set_color(int fg, int bg) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, (bg << 4) | fg);
 }
+
+void
+set_cursor_pos(int x, int y) {
+	COORD coord;
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	coord.X = x;
+	coord.Y = y;
+
+	SetConsoleCursorPosition(hConsole, coord);
+}
