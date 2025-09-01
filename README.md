@@ -39,7 +39,7 @@ Due to a limitation in (or feature of) Wine, **this tool and the game need to be
 
 - FN1: Pauses and unpauses the replay, and while taking over, goes back to where you last paused.
 - B and C: With the game paused, takes over Player 1's or Player 2's actions respectively, after a little countdown.
-- D: Rewinds the replay, for a maximum of 20 seconds (to save memory).
+- D: Rewinds the replay, for a maximum of 30 seconds (to save memory).
 
 ## Acknowledgements
 

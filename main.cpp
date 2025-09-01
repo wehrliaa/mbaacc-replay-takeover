@@ -55,7 +55,7 @@ main() {
 	bool isTakingOver = false;
 
 	// Rewind-related variables
-	int rewindPoolSize = 20 * (60 / 2); // 20 seconds, saving every other frame
+	int rewindPoolSize = 30 * (60 / 2); // 30 seconds, saving every other frame
 	struct RewindState* rewindPool = new struct RewindState [rewindPoolSize];
 	int rewindReadIndex = 0;
 	int rewindWriteIndex = 0;
@@ -85,7 +85,7 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 	//
 	// Actually putting it in the main loop is unnecessary, since once replay
 	// gets detected, it's not gonna go back to non-replay mode. Unless if
-	// you're running the game from the base exe... You aren't doing that, are
+	// you're running the game from the base exe... You're not doing that, are
 	// you?
 	while (game_state.aVersusCheck.read_memory(false) != 2) {
 		printf("\rReplay mode wasn't detected!");
@@ -107,7 +107,7 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 		"B or C = With the replay paused, takes over P1's or P2's actions\n"
 		"         respectively, after a little countdown.\n"
 		"                                                                  \n"
-		"D      = Rewinds the replay for a maximum of 20 seconds (to\n"
+		"D      = Rewinds the replay for a maximum of 30 seconds (to\n"
 		"         save memory). Reset the round if you need to go back\n"
 		"         further.\n"
 		"                                                                  \n"
