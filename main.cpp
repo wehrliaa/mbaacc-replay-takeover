@@ -72,9 +72,9 @@ main() {
 start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 
 	system("cls");
-	printf("                   MBAACC Replay Takeover\n\n");
+	printf("                   MBAACC Replay Takeover v1.0\n\n");
 
-	printf("Please open the game in Replay Mode. In CCCaster v3.1, Go to:\n\n"
+	printf("Please open the game in Replay Mode. In CCCaster v3.1, go to:\n\n"
 	       "Main menu -> [4] Offline -> [5] Replay\n\n");
 
  	gProc = wait_process("MBAA.exe");
@@ -111,9 +111,11 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 		"         save memory). Reset the round if you need to go back\n"
 		"         further.\n"
 		"                                                                  \n"
-		"rewindPool[%d] is using ~%dMB of memory.\n\n",
-		rewindPoolSize,
-		sizeof(struct RewindState[rewindPoolSize]) / (1024 * 1024)
+		"Check for new releases at:\n"
+		"         https://github.com/wehrliaa/mbaacc-replay-takeover/\n"
+		//"rewindPool[%d] is using ~%dMB of memory.\n\n",
+		//rewindPoolSize,
+		//sizeof(struct RewindState[rewindPoolSize]) / (1024 * 1024)
 	);
 
 	while (1) {

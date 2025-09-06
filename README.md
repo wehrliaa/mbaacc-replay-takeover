@@ -13,10 +13,6 @@ The code is based on my [partial rewrite of kosunan's training tool](https://git
 - [X] Play sounds to indicate current state of the program (about to start takeover, saved or loaded state, etc)
 - [X] Replay rewind
 
-## Known issues
-
-None.
-
 ## Building and usage
 
 Only dependencies are MinGW-w64 and `make`.
@@ -43,7 +39,8 @@ Due to a limitation in (or feature of) Wine, **this tool and the game need to be
 
 ## Acknowledgements
 
-- [Meepster99](https://github.com/Meepster99/), for providing me with her Ghidra project for this game. This would've taken a lot longer to make if it wasn't for that, so thanks a lot!
+- [Meepster99](https://github.com/Meepster99/), for providing me with her Ghidra project for this game. This would've taken a lot longer to make if it wasn't for that.
+- Kou and Lewi, for having helped me find bugs during beta.
 
 ## License
 
