@@ -26,19 +26,19 @@ saveReplayData(GameStateManager* gsm, struct PlayerReplayData (&prdArray)[6][2])
 	int pointerToSomeOtherThing;
 	int roundNumber;
 
+	roundNumber = gsm->aRoundNumber.read_memory(false);
+
 	// Could maybe get this value only once, since the game only sets it once.
-	pointerToSomeOtherThing = gsm->aPointerToSomething.read_memory(false) + 0x120;
+	pointerToSomeOtherThing = gsm->aPointerToSomething.read_memory(false) + 0x120 + (0x140 * roundNumber);
 
 	ReadProcessMemory(
 		gProc.handle,
 		(LPVOID)(pointerToSomeOtherThing),
 		&pointerToRoundStuff, 4, NULL);
 
-	roundNumber = gsm->aRoundNumber.read_memory(false);
-
 	ReadProcessMemory(
 		gProc.handle,
-		(LPVOID)(pointerToRoundStuff + (0x90 * roundNumber)),
+		(LPVOID)(pointerToRoundStuff),
 		&prdArray[roundNumber], sizeof(struct PlayerReplayData[2]), NULL);
 }
 
@@ -48,18 +48,18 @@ loadReplayData(GameStateManager* gsm, struct PlayerReplayData (&prdArray)[6][2])
 	int pointerToSomeOtherThing;
 	int roundNumber;
 
+	roundNumber = gsm->aRoundNumber.read_memory(false);
+
 	// Could maybe get this value only once, since the game only sets it once.
-	pointerToSomeOtherThing = gsm->aPointerToSomething.read_memory(false) + 0x120;
+	pointerToSomeOtherThing = gsm->aPointerToSomething.read_memory(false) + 0x120 + (0x140 * roundNumber);
 
 	ReadProcessMemory(
 		gProc.handle,
 		(LPVOID)(pointerToSomeOtherThing),
 		&pointerToRoundStuff, 4, NULL);
 
-	roundNumber = gsm->aRoundNumber.read_memory(false);
-
 	WriteProcessMemory(
 		gProc.handle,
-		(LPVOID)(pointerToRoundStuff + (0x90 * roundNumber)),
+		(LPVOID)(pointerToRoundStuff),
 		&prdArray[roundNumber], sizeof(struct PlayerReplayData[2]), NULL);
 }
