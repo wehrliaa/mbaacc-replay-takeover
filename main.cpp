@@ -74,11 +74,14 @@ main() {
 
 start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 
-	system("cls");
-	printf("                   MBAACC Replay Takeover v1.0\n\n");
+	system("title MBAACC Replay Takeover v1.0");
 
-	printf("Please open the game in Replay Mode. In CCCaster v3.1, go to:\n\n"
-	       "Main menu -> [4] Offline -> [5] Replay\n\n");
+	system("cls");
+	printf(
+		"\n"
+		"Please open the game in Replay Mode. In CCCaster v3.1, go to:\n\n"
+		"Main menu -> [4] Offline -> [5] Replay\n\n"
+	);
 
  	gProc = wait_process("MBAA.exe");
 
@@ -102,7 +105,7 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 	prepareChallengerText();
 	changeChallengerText(P1Text.c_str(), P2Text.c_str());
 
-	set_cursor_pos(0, 2);
+	set_cursor_pos(0, 1);
 	printf(
 		"FN1    = Pauses and unpauses the replay.                          \n"
 		"                                                                  \n"
