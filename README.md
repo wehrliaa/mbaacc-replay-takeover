@@ -4,15 +4,6 @@ This is a very simple implementation of replay takeover for Melty Blood Actress 
 
 The code is based on my [partial rewrite of kosunan's training tool](https://github.com/wehrliaa/mbaacc-training-linux).
 
-## Goals
-
-- [X] Pause the game indefinitely
-- [X] Prevent the replay from desyncing after pausing
-- [X] Save/load state
-- [X] Take over inputs
-- [X] Play sounds to indicate current state of the program (about to start takeover, saved or loaded state, etc)
-- [X] Replay rewind
-
 ## Building and usage
 
 Only dependencies are MinGW-w64 and `make`.
