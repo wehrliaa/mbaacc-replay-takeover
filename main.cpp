@@ -137,7 +137,7 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 		// Reset stuff at the start of each round
 		if (global_frame_count == 0) {
 			isPaused = false;
-			//game_state.play();
+			game_state.play();
 
 			isTakingOver = false;
 			game_state.untakeover();
@@ -210,13 +210,13 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 				P2Text = "\0";
 
 				save_state.save(&game_state);
-				//game_state.pause();
+				game_state.pause();
 			} else {
 				P1Text = "PLAYING\0";
 				P2Text = "\0";
 
 				save_state.load(&game_state);
-				//game_state.play();
+				game_state.play();
 			}
 		}
 
@@ -231,7 +231,7 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 			save_state.load(&game_state);
 
 			isPaused = true;
-			//game_state.pause();
+			game_state.pause();
 		}
 
 		if (isPaused) {
@@ -270,12 +270,12 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 				case 0:
 					isPaused = false;
 					game_state.takeoverP1();
-					//game_state.play();
+					game_state.play();
 					break;
 				case 1:
 					isPaused = false;
 					game_state.takeoverP2();
-					//game_state.play();
+					game_state.play();
 					break;
 			}
 		}
