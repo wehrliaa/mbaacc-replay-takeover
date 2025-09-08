@@ -75,6 +75,7 @@ public:
 	void
 	fetch_game_data() {
 		this->aFN1Key.read_memory(false);
+		this->aFN2Key.read_memory(false);
 		this->aBKey.read_memory(false);
 		this->aCKey.read_memory(false);
 		this->aDKey.read_memory(false);

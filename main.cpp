@@ -42,6 +42,9 @@ main() {
 	int FN1Button = 0;
 	int FN1Frames = 0;
 
+	int FN2Button = 0;
+	int FN2Frames = 0;
+
 	// Game state-related variables
 	GameStateManager game_state;
 	bool isPaused = false;
@@ -101,8 +104,10 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 
 	set_cursor_pos(0, 2);
 	printf(
-		"FN1    = Pauses and unpauses the replay, and while taking over,\n"
-		"         goes back to where you last paused.\n"
+		"FN1    = Pauses and unpauses the replay.                          \n"
+		"                                                                  \n"
+		"FN2    = While taking over, resets back to where you last\n"
+		"         paused, and pauses the replay.\n"
 		"                                                                  \n"
 		"B or C = With the replay paused, takes over P1's or P2's actions\n"
 		"         respectively, after a little countdown.\n"
@@ -166,6 +171,12 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 				FN1Frames += 1;
 			} else FN1Frames = 0;
 
+			// FN2
+			FN2Button = game_state.aFN2Key.int_data;
+			if (FN2Button >= 1) {
+				FN2Frames += 1;
+			} else FN2Frames = 0;
+
 			// B
 			BButton = game_state.aBKey.int_data;
 			if (BButton >= 1) {
@@ -188,36 +199,36 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 		// Handle state SECOND //
 		// srry im dumb i need to remind myself of this //
 
-		if (FN1Frames == 1) {
-			if (!isTakingOver) {
-				isPaused = !isPaused;
+		if ((FN1Frames == 1) && (!isTakingOver)) {
+			isPaused = !isPaused;
 
-				if (isPaused) {
-					P1Text = "PAUSED\0";
-					P2Text = "\0";
-
-					save_state.save(&game_state);
-					//game_state.pause();
-				} else {
-					P1Text = "PLAYING\0";
-					P2Text = "\0";
-
-					save_state.load(&game_state);
-					//game_state.play();
-				}
-			} else {
-				// stop taking over, pause, and load state
+			if (isPaused) {
 				P1Text = "PAUSED\0";
 				P2Text = "\0";
 
-				isTakingOver = false;
-				game_state.untakeover();
+				save_state.save(&game_state);
+				//game_state.pause();
+			} else {
+				P1Text = "PLAYING\0";
+				P2Text = "\0";
 
 				save_state.load(&game_state);
-
-				isPaused = true;
-				//game_state.pause();
+				//game_state.play();
 			}
+		}
+
+		if ((FN2Frames == 1) && (isTakingOver)) {
+			// stop taking over, pause, and load state
+			P1Text = "PAUSED\0";
+			P2Text = "\0";
+
+			isTakingOver = false;
+			game_state.untakeover();
+
+			save_state.load(&game_state);
+
+			isPaused = true;
+			//game_state.pause();
 		}
 
 		if (isPaused) {
