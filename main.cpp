@@ -234,10 +234,6 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 			game_state.pause();
 		}
 
-		if (isPaused) {
-			game_state.aEXFlashTimer.write_memory((char*)"\xff", 0, false);
-		}
-
 		// Replay takeover
 		if ((isPaused) && ((BFrames == 1) || (CFrames == 1))) {
 

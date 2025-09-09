@@ -12,7 +12,7 @@ public:
 	MemoryBlock aCKey               = MemoryBlock(0x37139B, 1);
 	MemoryBlock aDKey               = MemoryBlock(0x37139C, 1);
 	MemoryBlock aGameMode           = MemoryBlock(0x14EEE8, 2);
-	MemoryBlock aEXFlashTimer       = MemoryBlock(0x162A48, 1);
+	MemoryBlock aEXFlashTimer       = MemoryBlock(0x162A48, 4);
 	MemoryBlock aIntroState         = MemoryBlock(0x15D20B, 1);
 	MemoryBlock aOutroState         = MemoryBlock(0x162A6F, 1);
 	MemoryBlock aVersusCheck        = MemoryBlock(0x37BF2C, 4);
@@ -30,6 +30,8 @@ public:
 	// This place in the binary calls the function at 4618c0. NOPing it freezes
 	// all effects and specials in place.
 	MemoryBlock aFnCall3            = MemoryBlock(0x053EC9, 5);
+
+	MemoryBlock aPauseEXFlashTimer  = MemoryBlock(0x0239A6, 6);
 
 	// This place in the binary calls the function at 41f5a0. NOPing it
 	// prevents the A button from fastforwarding the replay.
@@ -91,6 +93,9 @@ public:
 		this->aFnCall1.write_memory((char*)"\x90\x90\x90\x90\x90", 0, false);
 		this->aFnCall2.write_memory((char*)"\x90\x90\x90\x90\x90", 0, false);
 		this->aFnCall3.write_memory((char*)"\x90\x90\x90\x90\x90", 0, false);
+		this->aPauseEXFlashTimer.write_memory((char*)"\x90\x90\x90\x90\x90\x90", 0, false);
+
+		this->aEXFlashTimer.write_memory((char*)"\xff\xff\xff\xff", 0, false);
 	}
 
 	void
@@ -99,6 +104,9 @@ public:
 		this->aFnCall1.write_memory((char*)"\xe8\x9e\x0e\x05\x00", 0, false);
 		this->aFnCall2.write_memory((char*)"\xe8\xf9\xa3\x04\x00", 0, false);
 		this->aFnCall3.write_memory((char*)"\xe8\xf2\xd9\x00\x00", 0, false);
+		this->aPauseEXFlashTimer.write_memory((char*)"\x29\x1d\x48\x2a\x56\x00", 0, false);
+
+		this->aEXFlashTimer.write_memory((char*)"\x00\x00\x00\x00", 0, false);
 	}
 
 	void
