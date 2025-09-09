@@ -58,8 +58,8 @@ main() {
 	bool isTakingOver = false;
 
 	// Rewind-related variables
-	int rewindPoolSize = 30 * (60 / 2); // 30 seconds, saving every other frame
-	struct RewindState* rewindPool = new struct RewindState [rewindPoolSize];
+	int rewindPoolSize;
+	struct RewindState* rewindPool;
 	int rewindReadIndex = 0;
 	int rewindWriteIndex = 0;
 	int rewindReadCount = 0;
@@ -71,6 +71,11 @@ main() {
 	// UI variables
 	std::string P1Text = "\0";
 	std::string P2Text = "\0";
+
+	// Config file variables
+	int cfg_takeover_countdown_amount;
+	int cfg_takeover_countdown_speed;
+	int cfg_max_rewind_time;
 
 start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 
@@ -105,6 +110,24 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 	prepareChallengerText();
 	changeChallengerText(P1Text.c_str(), P2Text.c_str());
 
+	// Read config file
+	delete rewindPool;
+
+	cfg_takeover_countdown_amount =
+		GetPrivateProfileInt("takeover", "takeover_countdown_amount", 3, ".\\takeover-config.ini");
+	cfg_takeover_countdown_amount = std::min(std::max(cfg_takeover_countdown_amount, 0), 999);
+
+	cfg_takeover_countdown_speed =
+		GetPrivateProfileInt("takeover", "takeover_countdown_speed", 500, ".\\takeover-config.ini");
+	cfg_takeover_countdown_speed = std::max(cfg_takeover_countdown_speed, 2);
+
+	cfg_max_rewind_time =
+		GetPrivateProfileInt("rewind", "max_rewind_time", 30, ".\\takeover-config.ini");
+	cfg_max_rewind_time = std::max(cfg_max_rewind_time, 1);
+
+	rewindPoolSize = cfg_max_rewind_time * (60 / 2);
+	rewindPool = new struct RewindState [rewindPoolSize];
+
 	set_cursor_pos(0, 1);
 	printf(
 		"FN1    = Pauses and unpauses the replay.                          \n"
@@ -115,13 +138,12 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 		"B or C = With the replay paused, takes over P1's or P2's actions\n"
 		"         respectively, after a little countdown.\n"
 		"                                                                  \n"
-		"D      = Rewinds the replay for a maximum of 30 seconds (to\n"
-		"         save memory). Reset the round if you need to go back\n"
-		"         further.\n"
+		"D      = Rewinds the replay for a maximum of %d seconds.\n"
 		"                                                                  \n"
 		"Check for new releases at:\n"
 		"         https://github.com/wehrliaa/mbaacc-replay-takeover/\n"
 		//"rewindPool[%d] is using ~%dMB of memory.\n\n",
+		, cfg_max_rewind_time
 		//rewindPoolSize,
 		//sizeof(struct RewindState[rewindPoolSize]) / (1024 * 1024)
 	);
@@ -243,7 +265,7 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 			std::stringstream ss;
 
 			// Countdown before taking over
-			for (int i = 3; i >= 1; i--) {
+			for (int i = cfg_takeover_countdown_amount; i >= 1; i--) {
 				game_state.aSound1.write_memory((char*)"\x01", 0, false);
 
 				ss.str("");
@@ -251,7 +273,7 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 				P2Text = ss.str();
 				changeChallengerText(P1Text.c_str(), P2Text.c_str());
 
-				Sleep(500);
+				Sleep(cfg_takeover_countdown_speed);
 			}
 
 			ss.str("");

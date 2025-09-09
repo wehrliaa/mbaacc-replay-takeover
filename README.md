@@ -27,7 +27,17 @@ Due to a limitation in (or feature of) Wine, **this tool and the game need to be
 - FN1: Pauses and unpauses the replay.
 - FN2: While taking over, resets back to where you last paused, and pauses the replay (essentially a load state).
 - B and C: With the game paused, takes over Player 1's or Player 2's actions respectively, after a little countdown.
-- D: Rewinds the replay, for a maximum of 30 seconds (to save memory).
+- D: Rewinds the replay, for a maximum of 30 seconds (can be configured. see Configuration below).
+
+## Configuration
+
+You can change how the tool behaves by editing the included `takeover-config.ini` file. Here's a summary of it:
+
+- `takeover_countdown_amount`: How long the countdown before takeover should be.
+- `takeover_countdown_speed`: How fast each count(?) of the countdown is, in milliseconds.
+- `max_rewind_time`: Time limit for the replay rewind, in seconds.
+
+The configuration file is (re)loaded every time the game is (re)opened.
 
 ## Acknowledgements
 
