@@ -105,8 +105,6 @@ public:
 		this->aFnCall2.write_memory((char*)"\xe8\xf9\xa3\x04\x00", 0, false);
 		this->aFnCall3.write_memory((char*)"\xe8\xf2\xd9\x00\x00", 0, false);
 		this->aPauseEXFlashTimer.write_memory((char*)"\x29\x1d\x48\x2a\x56\x00", 0, false);
-
-		this->aEXFlashTimer.write_memory((char*)"\x00\x00\x00\x00", 0, false);
 	}
 
 	void
