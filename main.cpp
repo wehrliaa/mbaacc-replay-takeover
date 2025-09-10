@@ -254,16 +254,30 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 			}
 		}
 
-		if ((FN2Frames == 1) && (state == 3)) {
-			// stop taking over, pause, and load state
-			state = 1;
+		if (state == 3) {
+			if (FN2Frames == 1) {
+				// stop taking over, load state, and immediately start
+				// the countdown
+				state = 2;
 
-			P1Text = "PAUSED\0";
-			P2Text = "\0";
+				takeoverCountdown = cfg_takeover_countdown_amount;
+				takeoverCountdownFrames = 0;
 
-			game_state.untakeover();
-			save_state.load(&game_state);
-			game_state.pause();
+				game_state.untakeover();
+				save_state.load(&game_state);
+				game_state.pause();
+
+			} else if (FN1Frames == 1) {
+				// stop taking over, load state, and pause
+				state = 1;
+
+				P1Text = "PAUSED\0";
+				P2Text = "\0";
+
+				game_state.untakeover();
+				save_state.load(&game_state);
+				game_state.pause();
+			}
 		}
 
 		// Replay takeover
