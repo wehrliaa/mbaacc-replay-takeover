@@ -47,7 +47,6 @@ main() {
 
 	// Game state-related variables
 	GameStateManager game_state;
-	bool isPaused = false;
 	int global_frame_count = 0;
 	int prev_frame_count = 0;
 
@@ -55,7 +54,9 @@ main() {
 	SaveStateManager save_state;
 
 	// Takeover-related variables
-	bool isTakingOver = false;
+	int takeoverCountdown;
+	int takeoverCountdownFrames = 0;
+	int playerToTakeover;
 
 	// Rewind-related variables
 	int rewindPoolSize;
@@ -76,6 +77,12 @@ main() {
 	int cfg_takeover_countdown_amount;
 	int cfg_takeover_countdown_speed;
 	int cfg_max_rewind_time;
+
+	// 0: unpaused (normal)
+	// 1: paused
+	// 2: takeover countdown
+	// 3: taking over
+	int state = 0;
 
 start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 
@@ -118,8 +125,8 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 	cfg_takeover_countdown_amount = std::min(std::max(cfg_takeover_countdown_amount, 0), 999);
 
 	cfg_takeover_countdown_speed =
-		GetPrivateProfileInt("takeover", "takeover_countdown_speed", 500, ".\\takeover-config.ini");
-	cfg_takeover_countdown_speed = std::max(cfg_takeover_countdown_speed, 2);
+		GetPrivateProfileInt("takeover", "takeover_countdown_speed", 30, ".\\takeover-config.ini");
+	cfg_takeover_countdown_speed = std::max(cfg_takeover_countdown_speed, 1);
 
 	cfg_max_rewind_time =
 		GetPrivateProfileInt("rewind", "max_rewind_time", 30, ".\\takeover-config.ini");
@@ -127,6 +134,11 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 
 	rewindPoolSize = cfg_max_rewind_time * (60 / 2);
 	rewindPool = new struct RewindState [rewindPoolSize];
+
+	takeoverCountdown = cfg_takeover_countdown_amount;
+	takeoverCountdownFrames = 0;
+
+	// Game is in replay mode at this point. All is good.
 
 	set_cursor_pos(0, 1);
 	printf(
@@ -142,9 +154,9 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 		"                                                                  \n"
 		"Check for new releases at:\n"
 		"         https://github.com/wehrliaa/mbaacc-replay-takeover/\n"
-		//"rewindPool[%d] is using ~%dMB of memory.\n\n",
-		, cfg_max_rewind_time
-		//rewindPoolSize,
+		//"rewindPool[%d] is using ~%dMB of memory.\n\n"
+		,cfg_max_rewind_time
+		//,rewindPoolSize,
 		//sizeof(struct RewindState[rewindPoolSize]) / (1024 * 1024)
 	);
 
@@ -158,10 +170,9 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 
 		// Reset stuff at the start of each round
 		if (global_frame_count == 0) {
-			isPaused = false;
+			state = 0;
 			game_state.play();
 
-			isTakingOver = false;
 			game_state.untakeover();
 
 			rewindReadCount = 0;
@@ -224,16 +235,17 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 		// Handle state SECOND //
 		// srry im dumb i need to remind myself of this //
 
-		if ((FN1Frames == 1) && (!isTakingOver)) {
-			isPaused = !isPaused;
+		if ((FN1Frames == 1) && (state < 2)) { // either unpaused or paused
+			state = !state; // !0 is 1, !1 is 0
 
-			if (isPaused) {
+			if (state == 1) {
 				P1Text = "PAUSED\0";
 				P2Text = "\0";
 
 				save_state.save(&game_state);
 				game_state.pause();
-			} else {
+
+			} else if (state == 0) {
 				P1Text = "PLAYING\0";
 				P2Text = "\0";
 
@@ -242,66 +254,73 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 			}
 		}
 
-		if ((FN2Frames == 1) && (isTakingOver)) {
+		if ((FN2Frames == 1) && (state == 3)) {
 			// stop taking over, pause, and load state
+			state = 1;
+
 			P1Text = "PAUSED\0";
 			P2Text = "\0";
 
-			isTakingOver = false;
 			game_state.untakeover();
-
 			save_state.load(&game_state);
-
-			isPaused = true;
 			game_state.pause();
 		}
 
 		// Replay takeover
-		if ((isPaused) && ((BFrames == 1) || (CFrames == 1))) {
-
-			isTakingOver = true;
+		if ((state == 1) && ((BFrames == 1) || (CFrames == 1))) {
+			state = 2;
 
 			P1Text = "TAKING OVER\0";
-			std::stringstream ss;
 
-			// Countdown before taking over
-			for (int i = cfg_takeover_countdown_amount; i >= 1; i--) {
-				game_state.aSound1.write_memory((char*)"\x01", 0, false);
-
-				ss.str("");
-				ss << "PLAYER " << (CFrames == 1) + 1 << " IN " << i << "\0";
-				P2Text = ss.str();
-				changeChallengerText(P1Text.c_str(), P2Text.c_str());
-
-				Sleep(cfg_takeover_countdown_speed);
-			}
-
-			ss.str("");
-			ss << "PLAYER " << (CFrames == 1) + 1 << "\0";
-			P2Text = ss.str();
-
-			// Load current state before taking over, just to make sure.
-			save_state.load(&game_state);
+			takeoverCountdown = cfg_takeover_countdown_amount;
+			takeoverCountdownFrames = 0;
 
 			// If B and C are pressed on the same frame, P2 will be selected.
-			switch (CFrames == 1) {
-				case 0:
-					isPaused = false;
+			playerToTakeover = (CFrames == 1) + 1;
+		}
+
+		// Countdown before taking over
+		if (state == 2) {
+			std::stringstream ss;
+
+			if (takeoverCountdownFrames == 0) {
+				game_state.aSound1.write_memory((char*)"\x01", 0, false);
+				ss.str("");
+				ss << "PLAYER " << playerToTakeover << " IN " << takeoverCountdown << "\0";
+				P2Text = ss.str();
+			}
+
+			takeoverCountdownFrames++;
+
+			if (takeoverCountdownFrames == cfg_takeover_countdown_speed) {
+				takeoverCountdown--;
+				takeoverCountdownFrames = 0;
+			}
+
+			// Countdown has finished, start takeover
+			if (takeoverCountdown == 0) {
+				state = 3;
+
+				ss.str("");
+				ss << "PLAYER " << playerToTakeover << "\0";
+				P2Text = ss.str();
+
+				// Load current state before taking over, just to make sure.
+				save_state.load(&game_state);
+
+				if (playerToTakeover == 1)
 					game_state.takeoverP1();
-					game_state.play();
-					break;
-				case 1:
-					isPaused = false;
+				else if (playerToTakeover == 2)
 					game_state.takeoverP2();
-					game_state.play();
-					break;
+
+				game_state.play();
 			}
 		}
 
 		// Replay rewind
 		// This is basically a circular buffer that is read backwards from the
 		// latest write location.
-		if ((!isTakingOver) && (!isPaused)) {
+		if (state == 0) {
 			if (DButton >= 1) {
 				// Reading from the buffer
 				if (rewindReadCount < rewindWriteCount) {
