@@ -86,7 +86,7 @@ main() {
 
 start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 
-	system("title MBAACC Replay Takeover v1.0");
+	system("title MBAACC Replay Takeover v1.1");
 
 	system("cls");
 	printf(
