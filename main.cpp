@@ -90,7 +90,6 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 
 	system("cls");
 	printf(
-		"\n"
 		"Please open the game in Replay Mode. In CCCaster v3.1, go to:\n\n"
 		"Main menu -> [4] Offline -> [5] Replay\n\n"
 	);
@@ -140,17 +139,23 @@ start: // FUCKING LOVE GOTOS HELL YEAHHHHH
 
 	// Game is in replay mode at this point. All is good.
 
-	set_cursor_pos(0, 1);
+	system("cls");
 	printf(
-		"FN1    = Pauses and unpauses the replay.                          \n"
+		"Controls:\n"
 		"                                                                  \n"
-		"FN2    = While taking over, resets back to where you last\n"
-		"         paused, and pauses the replay.\n"
+		"Press FN1 to (un)pause the replay. With the replay unpaused, hold D to rewind\n"
+		"it for a maximum of %d seconds.\n"
 		"                                                                  \n"
-		"B or C = With the replay paused, takes over P1's or P2's actions\n"
-		"         respectively, after a little countdown.\n"
+		"To takeover, pause the replay, then press B or C to takeover Player 1's or\n"
+		"Player 2's actions respectively. The tool will save a state here.\n"
 		"                                                                  \n"
-		"D      = Rewinds the replay for a maximum of %d seconds.\n"
+		"During takeover, you can press FN1 to load state and pause the replay, or press\n"
+		"FN2 to load state and takeover the same player again.\n"
+		"                                                                  \n"
+		"------                                                            \n"
+		"                                                                  \n"
+		"You can change how this tool behaves by editing the \"takeover-config.ini\"\n"
+		"file.\n"
 		"                                                                  \n"
 		"Check for new releases at:\n"
 		"         https://github.com/wehrliaa/mbaacc-replay-takeover/\n"
